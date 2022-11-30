@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yelb-db
+  namespace: yelb
+spec:
+  selector:
+    matchLabels:
+      app: yelb-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: yelb-db
+        tier: backenddb
+        app.kubernetes.io/name: "yelb"
+    spec:
+      containers:
+      - name: yelb-db
+        image: mreferre/yelb-db:0.5
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5432
+        #resources:
+        #  requests:
+        #    cpu: 1
+        #    memory: 200Mi
+        #  limits:
+        #    memory: 200Mi

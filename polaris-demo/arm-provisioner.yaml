@@ -1,0 +1,38 @@
+apiVersion: karpenter.sh/v1alpha5
+kind: Provisioner
+metadata:
+  name: arm64
+spec:
+  consolidation:
+    enabled: true
+  limits:
+    resources:
+      cpu: 100
+  provider:
+    instanceProfile: johnh-1-node-profile
+    securityGroupSelector:
+      aws:eks:cluster-name: johnh-1
+    subnetSelector:
+      karpenter.sh/discovery: johnh-1
+  requirements:
+  - key: karpenter.sh/capacity-type
+    operator: In
+    values:
+    - spot
+  - key: node.kubernetes.io/instance-type
+    operator: In
+    values:
+    - a1.medium
+    - a1.large
+    - a1.xlarge
+    - a1.2xlarge
+    - a1.4xlarge
+  - key: kubernetes.io/arch
+    operator: In
+    values:
+    - arm64
+  ttlSecondsUntilExpired: 86400
+  taints:
+    - key: kubernetes.io/arch
+      value: "arm64"
+      effect: NoSchedule

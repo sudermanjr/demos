@@ -1,0 +1,9 @@
+replicaCount: 3
+metricsService:
+  create: true
+  type: ClusterIP
+  port: 8000
+serviceMonitor:
+  enabled: true
+  additionalLabels:
+    release: prometheus

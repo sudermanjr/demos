@@ -1,0 +1,31 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: fairwinds-cosign
+spec:
+  validationFailureAction: audit
+  background: false
+  webhookTimeoutSeconds: 30
+  failurePolicy: Fail
+  rules:
+    - name: check-fairwinds-signatures
+      match:
+        any:
+        - resources:
+            kinds:
+              - Pod
+      verifyImages:
+      - imageReferences:
+        - "us-docker.pkg.dev/fairwinds-ops/oss*"
+        attestors:
+        - count: 1
+          entries:
+          - keys:
+              publicKeys: |-
+                -----BEGIN PUBLIC KEY-----
+                MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQBWcVxY7hX22GB5VP3fT1MFXrWHo0l
+                m663NBTpzUsrCZx4pGVBYh/IXomzYqZonEG7je23OqSlKRzbzDrQEzGbzXkBH1nt
+                0Rs83I6hj/Fv6Sziq6EV61080rWx4u65YWVqF0JYuEblFbtUVvcK7kTeRRONbc+B
+                rytBJsBWZsn0oOSuunw=
+                -----END PUBLIC KEY-----
+

@@ -1,0 +1,22 @@
+# Source: basic-demo/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-basic-demo
+  namespace: demo
+  labels:
+    app.kubernetes.io/name: basic-demo
+    helm.sh/chart: basic-demo-0.5.2
+    app.kubernetes.io/instance: demo
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: basic-demo
+    app.kubernetes.io/instance: demo
+
