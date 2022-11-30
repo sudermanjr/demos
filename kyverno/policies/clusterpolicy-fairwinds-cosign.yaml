@@ -4,7 +4,7 @@ metadata:
   name: fairwinds-cosign
 spec:
   validationFailureAction: audit
-  background: false
+  background: true
   webhookTimeoutSeconds: 30
   failurePolicy: Fail
   rules:
@@ -16,7 +16,7 @@ spec:
               - Pod
       verifyImages:
       - imageReferences:
-        - "us-docker.pkg.dev/fairwinds-ops/oss*"
+        - "us-docker.pkg.dev/fairwinds-ops/oss/*"
         attestors:
         - count: 1
           entries:
