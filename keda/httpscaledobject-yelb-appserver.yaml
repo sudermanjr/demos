@@ -1,0 +1,14 @@
+kind: HTTPScaledObject
+apiVersion: http.keda.sh/v1alpha1
+metadata:
+  name: yelb-appserver
+  namespace: yelb
+spec:
+  host: yelb.oss-demo.hillghost.com
+  scaleTargetRef:
+    deployment: yelb-appserver
+    service: yelb-appserver
+    port: 80
+  replicas:
+    min: 2
+    max: 100

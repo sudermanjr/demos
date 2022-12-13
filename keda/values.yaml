@@ -1,0 +1,31 @@
+prometheus:
+  metricServer:
+    enabled: true
+    podMonitor:
+      # Enables PodMonitor creation for the Prometheus Operator
+      enabled: true
+      additionalLabels:
+        release: prometheus
+  operator:
+    enabled: true
+    port: 8080
+    path: /metrics
+    podMonitor:
+      # Enables PodMonitor creation for the Prometheus Operator
+      enabled: true
+      additionalLabels:
+        release: prometheus
+    prometheusRules:
+      # Enables PrometheusRules creation for the Prometheus Operator
+      enabled: true
+      additionalLabels:
+        release: prometheus
+      alerts:
+        []
+        # - alert: KedaScalerErrors
+        #   annotations:
+        #     description: Keda scaledObject {{ $labels.scaledObject }} is experiencing errors with {{ $labels.scaler }} scaler
+        #     summary: Keda Scaler {{ $labels.scaler }} Errors
+        #   expr: sum by ( scaledObject , scaler) (rate(keda_metrics_adapter_scaler_errors[2m]))  > 0
+        #   for: 2m
+        #   labels:
