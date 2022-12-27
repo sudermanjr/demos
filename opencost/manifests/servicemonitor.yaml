@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    release: prometheus
+  name: opencost-svc-service-monitor
+  namespace: opencost
+spec:
+  endpoints:
+  - interval: 30s
+    port: opencost
+    scrapeTimeout: 25s
+  namespaceSelector:
+    matchNames:
+    - opencost
+  selector:
+    matchLabels:
+      app: opencost
