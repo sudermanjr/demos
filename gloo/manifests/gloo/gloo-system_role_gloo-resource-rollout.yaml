@@ -1,0 +1,31 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-delete-policy: hook-succeeded,before-hook-creation
+    helm.sh/hook-weight: "0"
+  labels:
+    app: gloo
+    gloo: rbac
+  name: gloo-resource-rollout
+  namespace: gloo-system
+rules:
+  - apiGroups:
+      - apps
+    resources:
+      - deployments
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - gloo.solo.io
+    resources:
+      - '*'
+    verbs:
+      - get
+      - list
+      - create
+      - update
+      - patch

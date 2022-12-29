@@ -1,0 +1,50 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app: gloo
+    gloo: rbac
+  name: gloo-resource-reader-gloo-system
+rules:
+  - apiGroups:
+      - gloo.solo.io
+    resources:
+      - upstreams
+      - upstreamgroups
+      - proxies
+    verbs:
+      - get
+      - list
+      - watch
+      - patch
+  - apiGroups:
+      - enterprise.gloo.solo.io
+    resources:
+      - authconfigs
+    verbs:
+      - get
+      - list
+      - watch
+      - patch
+  - apiGroups:
+      - ratelimit.solo.io
+    resources:
+      - ratelimitconfigs
+      - ratelimitconfigs/status
+    verbs:
+      - get
+      - list
+      - watch
+      - patch
+      - update
+  - apiGroups:
+      - graphql.gloo.solo.io
+    resources:
+      - graphqlapis
+      - graphqlapis/status
+    verbs:
+      - get
+      - list
+      - watch
+      - patch
+      - update

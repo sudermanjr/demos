@@ -1,0 +1,272 @@
+---
+namespace: infra
+repository: stable
+context: arn:aws:eks:us-east-2:338430314199:cluster/tamgddekjp
+repositories:
+  autoscaler:
+    url: https://kubernetes.github.io/autoscaler
+minimum_versions:
+  helm: 3.6.3
+charts:
+  gloo:
+    chart: gloo
+    namespace: gloo-system
+    repository: gloo
+    version: 1.12.36
+    values:
+      namespace:
+        create: false
+      k8s:
+        clusterName: cluster.local
+      settings:
+        # if this is set to false, default settings will be created by pods upon boot
+        create: true
+        linkerd: false
+        enableRestEds: false
+        aws: {}
+        invalidConfigPolicy:
+          replaceInvalidRoutes: true # replaces invalid routes in VirtualServices with errors to prevent controller failure from invalid config.
+          invalidRouteResponseCode: 404
+          invalidRouteResponseBody: Gloo Gateway has invalid configuration. Administrators
+            should run `glooctl check` to find and fix config errors.
+        # Namespaces that Gloo should watch. This includes watches set for pods, services, as well as CRD configuration objects.
+        watchNamespaces: []
+        # Gloo allows you to directly reference a Kubernetes service as a routing destination. To enable this feature,
+        # Gloo scans the cluster for Kubernetes services and creates a special type of in-memory Upstream to represent them.
+        # If the cluster contains a lot of services and you do not restrict the namespaces Gloo is watching, this can result
+        # in significant overhead. If you do not plan on using this feature, you can set this flag to true to turn it off.
+        disableKubernetesDestinations: false
+        # Set this option to determine the state of an Envoy listener when the corresponding Gloo Proxy resource has no routes.
+        # If false (default), Gloo will propagate the state of the Proxy to Envoy, resetting the listener to a clean slate with no routes.
+        # If true, Gloo will keep serving the routes from the last applied valid configuration.
+        disableProxyGarbageCollection: false
+      gloo:
+        deployment:
+          image:
+            repository: gloo
+          xdsPort: 9977
+          restXdsPort: 9976
+          validationPort: 9988
+          proxyDebugPort: 9966
+          replicas: 1
+          runAsUser: 10101
+          serviceAccount: {}
+      discovery:
+        enabled: true
+        fdsMode: WHITELIST
+        serviceAccount: {}
+        deployment:
+          image:
+            repository: discovery
+          replicas: 1
+          runAsUser: 10101
+          enablePodSecurityContext: true
+          fsGroup: 10101
+      gateway:
+        enabled: true
+        readGatewaysFromAllNamespaces: false
+        isolateVirtualHostsBySslConfig: false
+        validation:
+          enabled: true
+          failurePolicy: Fail   # strict admission controller
+          secretName: gateway-validation-certs
+          alwaysAcceptResources: false # denies invalid virtual service configs when  false
+          allowWarnings: true
+          serverEnabled: true
+          disableTransformationValidation: false
+          warnRouteShortCircuiting: true
+          validationServerGrpcMaxSizeBytes: 104857600
+          webhook:
+            enabled: true
+            disableHelmHook: false
+            extraAnnotations: {}
+        certGenJob:
+          enabled: true # requred for mTls=true
+          image:
+            repository: certgen
+          restartPolicy: OnFailure
+          setTtlAfterFinished: true
+          ttlSecondsAfterFinished: 60
+          runAsUser: 10101
+          cron:
+            enabled: true
+            schedule: 0 0 * * SUN
+          runOnUpdate: true # required true, to be able to change the mtls status after initial deployment. Must remain true to roll mTls certs on a schedule.
+        rolloutJob:
+          enabled: true
+          image:
+            repository: kubectl
+          restartPolicy: OnFailure
+          runAsUser: 10101
+          ttlSecondsAfterFinished: 60
+        cleanupJob:
+          enabled: true
+          image:
+            repository: kubectl
+          restartPolicy: OnFailure
+          runAsUser: 10101
+          ttlSecondsAfterFinished: 60
+        proxyServiceAccount: {}
+      gatewayProxies:
+        publicGw: # custom NAME for this gatewayProxy - for public access (Internet facing)
+          disabled: false # overwrite the "default" value in the merge step
+          antiAffinity: true #preferred anti-affinity for all other gateway proxy pods.
+          horizontalPodAutoscaler:
+            apiVersion: autoscaling/v2beta2 # can use v1 if desired
+            minReplicas: 3
+            maxReplicas: 10
+          podDisruptionBudget:
+            minAvailable: 60%   # should always run 3 replicas in prod, this ensures at least two are up.
+          kind:
+            deployment:
+              replicas: 2
+          service:
+            kubeResourceOverride: # workaround for https://github.com/solo-io/gloo/issues/5297
+              spec:
+                ports:
+                - port: 443
+                  protocol: TCP
+                  name: https
+                  targetPort: 8443
+                type: LoadBalancer
+            extraAnnotations:
+              ## /!\ WARNING /!\
+              ## values below will only work with the "AWS Load Balancer Controller". Not with the default k8s in-tree controller
+              service.beta.kubernetes.io/aws-load-balancer-type: external   # https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.2/guide/service/nlb/#configuration
+              service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing # https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.2/guide/service/nlb/
+              service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: instance   # https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.2/guide/service/nlb/#instance-mode_1
+              # LB attributes
+              service.beta.kubernetes.io/aws-load-balancer-attributes: load_balancing.cross_zone.enabled=false   # recommended in zero-downtime-gateway-rollout example, but could be investigated
+              #Target group attributes
+              service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: deregistration_delay.timeout_seconds=15,deregistration_delay.connection_termination.enabled=true
+              # Health checks
+              service.beta.kubernetes.io/aws-load-balancer-healthcheck-healthy-threshold: '2' # 2-20
+              service.beta.kubernetes.io/aws-load-balancer-healthcheck-unhealthy-threshold: '2' # 2-10
+              service.beta.kubernetes.io/aws-load-balancer-healthcheck-interval: '10' # 10 or 30
+              service.beta.kubernetes.io/aws-load-balancer-healthcheck-path: /envoy-hc
+              service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: HTTPS
+              service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: traffic-port
+              service.beta.kubernetes.io/aws-load-balancer-healthcheck-timeout: '6' # 6 is the minimum
+          gatewaySettings:
+            customHttpsGateway: # using the default HTTPS Gateway
+              virtualServiceSelector:
+                gateway-type: public # label set on the VirtualService
+              options:
+                healthCheck:
+                  # define a custom path that is available when the Gateway (Envoy listener) is actually listening
+                  path: /envoy-hc
+            disableHttpGateway: true # disable the default HTTP Gateway
+          podTemplate:
+            # graceful shutdown: Envoy will fail health checks but only stop after 7 seconds
+            terminationGracePeriodSeconds: 7
+            gracefulShutdown:
+              enabled: true
+              sleepTimeSeconds: 5
+            probes: true
+            # the gateway-proxy pod is ready only when a Gateway (Envoy listener) is listening
+            customReadinessProbe:
+              httpGet:
+                scheme: HTTPS
+                port: 8443
+                path: /envoy-hc
+              failureThreshold: 2
+              initialDelaySeconds: 5
+              periodSeconds: 5
+            image:
+              pullPolicy: Always
+            resources: # only applies to this proxy gateway deployment.
+              limits:
+                memory: 100Mi
+                cpu: 100m
+              requests:
+                memory: 100Mi
+                cpu: 100m
+            extraAnnotations: # configures datadog envoy auto-discovery.
+              ad.datadoghq.com/gateway-proxy.check_names: '["envoy"]'
+              ad.datadoghq.com/gateway-proxy.init_configs: '[{}]'
+              ad.datadoghq.com/gateway-proxy.instances: '[{"stats_url": "http://%%host%%:8081/metrics"}]'
+              ad.datadoghq.com/gateway-proxy.logs: '[{"source": "envoy", "service":
+                "gloo","log_processing_rules": [{"type": "multi_line", "name": "log_start_with_date","pattern"
+                : "^\\[[0-9]{4}-[0-9]{2}-[0-9]{2}|{"}]}]'
+          stats: # remaps the prometheus endpoint so datadog collects the metrics. Might need review.
+            enabled: true
+            enableStatsRoute: true
+            routePrefixRewrite: /stats
+            setDatadogAnnotations: true
+        corpGw: # Proxy name for private access (intranet facing)
+          disabled: false # overwrite the "default" value in the merge step
+          service:
+            httpPort: 80
+            httpsFirst: false
+            httpsPort: 443
+            httpNodePort: 32080 # random port to be fixed in your private network
+            type: NodePort
+          gatewaySettings:
+            customHttpGateway: # using the default HTTP Gateway
+              virtualServiceSelector:
+                gateway-type: private # label set on the VirtualService
+            disableHttpsGateway: true # disable the default HTTPS Gateway
+        gatewayProxy:
+          disabled: true # disable the default gateway-proxy deployment and its 2 default Gateway CRs
+      accessLogger:
+        enabled: false
+        port: 8083
+        serviceName: AccessLog
+        image:
+          repository: access-logger
+        runAsUser: 10101
+        replicas: 1
+        stats:
+          enabled: true
+      ingress:
+        enabled: false
+      global:
+        image:
+          registry: quay.io/solo-io
+          pullPolicy: IfNotPresent
+          extended: false
+        glooRbac:
+          create: true
+          namespaced: false
+        glooStats:
+          enabled: true
+          routePrefixRewrite: /stats/prometheus
+          setDatadogAnnotations: false
+          enableStatsRoute: false
+          statsPrefixRewrite: /stats
+        glooMtls:
+          enabled: true
+  aws-load-balancer-controller:
+    chart: aws-load-balancer-controller
+    namespace: aws-load-balancer-controller
+    repository: eks
+    version: 1.4.5
+    hooks:
+      pre_install:
+        # to update this, go here and find the file name that matches the app version you want to upgrade to:
+        # https://github.com/aws/eks-charts
+        # then take the number to the right of it after "Publish stable charts" and put that as the CRD ref version
+      - kubectl apply -k "github.com/aws/eks-charts/stable/aws-load-balancer-controller//crds?ref=v0.0.108"
+    values:
+      image:
+        pullPolicy: Always
+      priorityClassName: fairwinds-critical
+      region: us-east-2
+      vpcId: vpc-0ba2e9b7fc79acbd9
+      clusterName: tamgddekjp
+      ingressClass: alb
+      enableReadinessProbe: true
+      enableLivenessProbe: true
+      resources:
+        requests:
+          cpu: 100m
+          memory: 200Mi
+        limits:
+          cpu: 100m
+          memory: 200Mi
+      terminationGracePeriodSeconds: 10
+      rbac:
+        create: true
+      serviceAccount:
+        annotations:
+          eks.amazonaws.com/role-arn: arn:aws:iam::338430314199:role/tamgddekjp_aws_loadbalancer_controller

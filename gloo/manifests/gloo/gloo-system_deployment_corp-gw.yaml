@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gloo
+    gateway-proxy-id: corp-gw
+    gloo: gateway-proxy
+  name: corp-gw
+  namespace: gloo-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      gateway-proxy-id: corp-gw
+      gloo: gateway-proxy
+  template:
+    metadata:
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: "8081"
+        prometheus.io/scrape: "true"
+      labels:
+        gateway-proxy: live
+        gateway-proxy-id: corp-gw
+        gloo: gateway-proxy
+    spec:
+      containers:
+        - args:
+            - --disable-hot-restart
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          image: quay.io/solo-io/gloo-envoy-wrapper:1.12.36
+          imagePullPolicy: IfNotPresent
+          name: corp-gw
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+            - containerPort: 8443
+              name: https
+              protocol: TCP
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 10101
+          volumeMounts:
+            - mountPath: /etc/envoy
+              name: envoy-config
+            - mountPath: /etc/envoy/ssl
+              name: gloo-mtls-certs
+              readOnly: true
+        - env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: GLOO_MTLS_SDS_ENABLED
+              value: "true"
+          image: quay.io/solo-io/sds:1.12.36
+          imagePullPolicy: IfNotPresent
+          name: sds
+          ports:
+            - containerPort: 8234
+              name: sds
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            tcpSocket:
+              port: 8234
+          volumeMounts:
+            - mountPath: /etc/envoy/ssl
+              name: gloo-mtls-certs
+              readOnly: true
+      securityContext:
+        fsGroup: 10101
+        runAsUser: 10101
+      serviceAccountName: gateway-proxy
+      volumes:
+        - configMap:
+            name: corp-gw-envoy-config
+          name: envoy-config
+        - name: gloo-mtls-certs
+          secret:
+            defaultMode: 420
+            secretName: gloo-mtls-certs

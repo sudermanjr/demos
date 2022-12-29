@@ -1,0 +1,18 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: gloo
+    gloo: rbac
+  name: kube-resource-watcher-binding-gloo-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kube-resource-watcher-gloo-system
+subjects:
+  - kind: ServiceAccount
+    name: gloo
+    namespace: gloo-system
+  - kind: ServiceAccount
+    name: discovery
+    namespace: gloo-system

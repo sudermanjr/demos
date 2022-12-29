@@ -1,0 +1,10 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: public-gw-pdb
+  namespace: gloo-system
+spec:
+  minAvailable: 60%
+  selector:
+    matchLabels:
+      gateway-proxy-id: public-gw

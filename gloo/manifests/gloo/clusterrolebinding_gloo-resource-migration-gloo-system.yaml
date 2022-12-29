@@ -1,0 +1,19 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  annotations:
+    helm.sh/hook: pre-upgrade
+    helm.sh/hook-delete-policy: hook-succeeded,before-hook-creation
+    helm.sh/hook-weight: "0"
+  labels:
+    app: gloo
+    gloo: rbac
+  name: gloo-resource-migration-gloo-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: gloo-resource-migration-gloo-system
+subjects:
+  - kind: ServiceAccount
+    name: gloo-resource-migration
+    namespace: gloo-system

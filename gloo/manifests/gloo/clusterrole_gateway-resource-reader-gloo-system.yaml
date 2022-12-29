@@ -1,0 +1,22 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app: gloo
+    gloo: rbac
+  name: gateway-resource-reader-gloo-system
+rules:
+  - apiGroups:
+      - gateway.solo.io
+    resources:
+      - gateways
+      - httpgateways
+      - virtualservices
+      - routetables
+      - virtualhostoptions
+      - routeoptions
+    verbs:
+      - get
+      - list
+      - watch
+      - patch

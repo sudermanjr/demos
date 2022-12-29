@@ -1,0 +1,18 @@
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  labels:
+    app: gloo
+    gateway-proxy-id: public-gw
+    gloo: gateway-proxy
+  name: public-gw-hpa
+  namespace: gloo-system
+spec:
+  behavior: null
+  maxReplicas: 10
+  metrics: null
+  minReplicas: 3
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: public-gw

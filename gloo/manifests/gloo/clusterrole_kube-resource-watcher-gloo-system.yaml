@@ -1,0 +1,21 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app: gloo
+    gloo: rbac
+  name: kube-resource-watcher-gloo-system
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+      - services
+      - secrets
+      - endpoints
+      - configmaps
+      - namespaces
+    verbs:
+      - get
+      - list
+      - watch
