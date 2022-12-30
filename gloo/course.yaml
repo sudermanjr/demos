@@ -24,3 +24,9 @@ charts:
     version: 1.13.1
     files:
       - gloo-base-values.yaml
+    values:
+      gatewayProxies:
+        publicGw:
+          service:
+            extraAnnotations:
+              external-dns.alpha.kubernetes.io/hostname: gloo-secondary.oss-demo.hillghost.com
