@@ -1,0 +1,194 @@
+namespace:
+  create: false
+k8s:
+  clusterName: cluster.local
+settings:
+  # if this is set to false, default settings will be created by pods upon boot
+  create: true
+  linkerd: false
+  enableRestEds: false
+  aws: {}
+  invalidConfigPolicy:
+    replaceInvalidRoutes: true # replaces invalid routes in VirtualServices with errors to prevent controller failure from invalid config.
+    invalidRouteResponseCode: 404
+    invalidRouteResponseBody: Gloo Gateway has invalid configuration. Administrators
+      should run `glooctl check` to find and fix config errors.
+  # Namespaces that Gloo should watch. This includes watches set for pods, services, as well as CRD configuration objects.
+  watchNamespaces: []
+  # Gloo allows you to directly reference a Kubernetes service as a routing destination. To enable this feature,
+  # Gloo scans the cluster for Kubernetes services and creates a special type of in-memory Upstream to represent them.
+  # If the cluster contains a lot of services and you do not restrict the namespaces Gloo is watching, this can result
+  # in significant overhead. If you do not plan on using this feature, you can set this flag to true to turn it off.
+  disableKubernetesDestinations: false
+  # Set this option to determine the state of an Envoy listener when the corresponding Gloo Proxy resource has no routes.
+  # If false (default), Gloo will propagate the state of the Proxy to Envoy, resetting the listener to a clean slate with no routes.
+  # If true, Gloo will keep serving the routes from the last applied valid configuration.
+  disableProxyGarbageCollection: false
+gloo:
+  deployment:
+    image:
+      repository: gloo
+    xdsPort: 9977
+    restXdsPort: 9976
+    validationPort: 9988
+    proxyDebugPort: 9966
+    replicas: 1
+    runAsUser: 10101
+    serviceAccount: {}
+discovery:
+  enabled: false
+  fdsMode: WHITELIST
+  serviceAccount: {}
+  deployment:
+    image:
+      repository: discovery
+    replicas: 1
+    runAsUser: 10101
+    enablePodSecurityContext: true
+    fsGroup: 10101
+gateway:
+  enabled: true
+  readGatewaysFromAllNamespaces: false
+  isolateVirtualHostsBySslConfig: false
+  validation:
+    enabled: true
+    failurePolicy: Fail   # strict admission controller
+    secretName: gateway-validation-certs
+    alwaysAcceptResources: false # denies invalid virtual service configs when  false
+    allowWarnings: true
+    serverEnabled: true
+    disableTransformationValidation: false
+    warnRouteShortCircuiting: true
+    validationServerGrpcMaxSizeBytes: 104857600
+    webhook:
+      enabled: true
+      disableHelmHook: false
+      extraAnnotations: {}
+  certGenJob:
+    enabled: true # requred for mTls=true
+    image:
+      repository: certgen
+    restartPolicy: OnFailure
+    setTtlAfterFinished: true
+    ttlSecondsAfterFinished: 60
+    runAsUser: 10101
+    cron:
+      enabled: true
+      schedule: 0 0 * * SUN
+    runOnUpdate: true # required true, to be able to change the mtls status after initial deployment. Must remain true to roll mTls certs on a schedule.
+  rolloutJob:
+    enabled: true
+    image:
+      repository: kubectl
+    restartPolicy: OnFailure
+    runAsUser: 10101
+    ttlSecondsAfterFinished: 60
+  cleanupJob:
+    enabled: true
+    image:
+      repository: kubectl
+    restartPolicy: OnFailure
+    runAsUser: 10101
+    ttlSecondsAfterFinished: 60
+  proxyServiceAccount: {}
+gatewayProxies:
+  publicGw: # custom NAME for this gatewayProxy - for public access (Internet facing)
+    disabled: false # overwrite the "default" value in the merge step
+    antiAffinity: true #preferred anti-affinity for all other gateway proxy pods.
+    horizontalPodAutoscaler:
+      apiVersion: autoscaling/v2beta2 # can use v1 if desired
+      minReplicas: 3
+      maxReplicas: 10
+    podDisruptionBudget:
+      minAvailable: 60%   # should always run 3 replicas in prod, this ensures at least two are up.
+    service:
+      kubeResourceOverride: # workaround for https://github.com/solo-io/gloo/issues/5297
+        spec:
+          ports:
+          - port: 443
+            protocol: TCP
+            name: https
+            targetPort: 8443
+          type: LoadBalancer
+      extraAnnotations:
+        service.beta.kubernetes.io/aws-load-balancer-attributes: load_balancing.cross_zone.enabled=false
+        service.beta.kubernetes.io/aws-load-balancer-healthcheck-healthy-threshold: "2"
+        service.beta.kubernetes.io/aws-load-balancer-healthcheck-interval: "10"
+        service.beta.kubernetes.io/aws-load-balancer-healthcheck-path: /envoy-hc
+        service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: traffic-port
+        service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: HTTPS
+        service.beta.kubernetes.io/aws-load-balancer-healthcheck-timeout: "6"
+        service.beta.kubernetes.io/aws-load-balancer-healthcheck-unhealthy-threshold: "2"
+        service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: instance
+        service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+        service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: deregistration_delay.timeout_seconds=15,deregistration_delay.connection_termination.enabled=true
+        service.beta.kubernetes.io/aws-load-balancer-type: external
+    gatewaySettings:
+      customHttpsGateway: # using the default HTTPS Gateway
+        virtualServiceSelector:
+          gateway-type: public # label set on the VirtualService
+        options:
+          healthCheck:
+            # define a custom path that is available when the Gateway (Envoy listener) is actually listening
+            path: /envoy-hc
+      disableHttpGateway: true # disable the default HTTP Gateway
+    podTemplate:
+      # graceful shutdown: Envoy will fail health checks but only stop after 7 seconds
+      terminationGracePeriodSeconds: 7
+      gracefulShutdown:
+        enabled: true
+        sleepTimeSeconds: 5
+      probes: true
+      # the gateway-proxy pod is ready only when a Gateway (Envoy listener) is listening
+      customReadinessProbe:
+        httpGet:
+          scheme: HTTPS
+          port: 8443
+          path: /envoy-hc
+        failureThreshold: 2
+        initialDelaySeconds: 5
+        periodSeconds: 5
+      image:
+        pullPolicy: Always
+      resources: # only applies to this proxy gateway deployment.
+        limits:
+          memory: 100Mi
+          cpu: 100m
+        requests:
+          memory: 100Mi
+          cpu: 100m
+    stats:
+      enabled: true
+      enableStatsRoute: true
+      routePrefixRewrite: /stats
+      setDatadogAnnotations: false
+  gatewayProxy:
+    disabled: true # disable the default gateway-proxy deployment and its 2 default Gateway CRs
+accessLogger:
+  enabled: false
+  port: 8083
+  serviceName: AccessLog
+  image:
+    repository: access-logger
+  runAsUser: 10101
+  replicas: 1
+  stats:
+    enabled: true
+ingress:
+  enabled: false
+global:
+  image:
+    registry: quay.io/solo-io
+    pullPolicy: IfNotPresent
+    extended: false
+  glooRbac:
+    create: true
+    namespaced: false
+  glooStats:
+    enabled: true
+    routePrefixRewrite: /stats/prometheus
+    setDatadogAnnotations: false
+    enableStatsRoute: false
+    statsPrefixRewrite: /stats
+  glooMtls:
+    enabled: true

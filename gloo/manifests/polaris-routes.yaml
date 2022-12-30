@@ -11,6 +11,8 @@ spec:
        - prefix: '/polaris/'
       routeAction:
         single:
-          upstream:
-            name: 'polaris-polaris-dashboard-80'
-            namespace: gloo-system
+          kube:
+            ref:
+              name: 'polaris-dashboard'
+              namespace: polaris
+            port: 80

@@ -2,7 +2,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: gloo.oss-demo.hillghost.com
-  namespace: gloo-system
+  namespace: gloo-lb
 spec:
   secretName: gloo-demo-cert
   dnsNames:

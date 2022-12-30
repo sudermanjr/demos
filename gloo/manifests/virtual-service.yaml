@@ -2,14 +2,14 @@ apiVersion: gateway.solo.io/v1
 kind: VirtualService
 metadata:
   name: basic-demo
-  namespace: gloo-system
+  namespace: gloo-lb
   labels:
     gateway-type: public # label used by the "public" Gateway
 spec:
   sslConfig: # the internet-facing proxy uses TLS
     secretRef:
       name: gloo-demo-cert
-      namespace: gloo-system
+      namespace: gloo-lb
   virtualHost:
     domains:
     - 'gloo.oss-demo.hillghost.com' # listen on these public domain names
