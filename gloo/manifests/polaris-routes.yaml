@@ -1,0 +1,16 @@
+apiVersion: gateway.solo.io/v1
+kind: RouteTable
+metadata:
+  name: 'polaris-routes'
+  namespace: 'polaris'
+  labels:
+    app.kubernetes.io/name: polaris
+spec:
+  routes:
+    - matchers:
+       - prefix: '/polaris/'
+      routeAction:
+        single:
+          upstream:
+            name: 'polaris-polaris-dashboard-80'
+            namespace: gloo-system

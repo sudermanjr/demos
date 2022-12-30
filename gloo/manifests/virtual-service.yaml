@@ -1,0 +1,29 @@
+apiVersion: gateway.solo.io/v1
+kind: VirtualService
+metadata:
+  name: basic-demo
+  namespace: gloo-system
+  labels:
+    gateway-type: public # label used by the "public" Gateway
+spec:
+  sslConfig: # the internet-facing proxy uses TLS
+    secretRef:
+      name: gloo-demo-cert
+      namespace: gloo-system
+  virtualHost:
+    domains:
+    - 'gloo.oss-demo.hillghost.com' # listen on these public domain names
+    routes:
+    - matchers:
+      - prefix: /hello-world
+      directResponseAction:
+        status: 200
+        body: "Hello, world!\n"
+    - matchers:
+      - prefix: '/polaris' # delegate ownership of routes for polaris
+      delegateAction:
+        selector:
+          labels:
+            app.kubernetes.io/name: polaris
+          namespaces:
+          - polaris

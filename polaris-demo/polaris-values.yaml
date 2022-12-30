@@ -8,6 +8,7 @@ webhook:
   nodeSelector:
     "kubernetes.io/arch": "amd64"
 dashboard:
+  basePath: "/polaris/"
   nodeSelector:
     "kubernetes.io/arch": "amd64"
   tolerations:
