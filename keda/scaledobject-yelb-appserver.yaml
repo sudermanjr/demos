@@ -13,7 +13,7 @@ spec:
     metadata:
       serverAddress: http://prometheus-operated.prometheus:9090
       metricName: nginx_ingress_controller_requests
-      threshold: '100'
+      threshold: '.5'
       query: |
         avg(rate(nginx_ingress_controller_ingress_upstream_latency_seconds_sum{service="yelb-appserver"}[2m]))*10000
 #  - type: prometheus
