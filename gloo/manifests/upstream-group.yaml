@@ -1,0 +1,14 @@
+apiVersion: gloo.solo.io/v1
+kind: UpstreamGroup
+metadata:
+  name: polaris
+  namespace: polaris
+spec:
+  destinations:
+  - destination:
+      kube:
+        ref:
+          name: polaris-dashboard
+          namespace: polaris
+        port: 80
+    weight: 10

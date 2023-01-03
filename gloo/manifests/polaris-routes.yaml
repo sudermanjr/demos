@@ -10,9 +10,6 @@ spec:
     - matchers:
        - prefix: '/polaris/'
       routeAction:
-        single:
-          kube:
-            ref:
-              name: 'polaris-dashboard'
-              namespace: polaris
-            port: 80
+        upstreamGroup:
+          name: polaris
+          namespace: polaris

@@ -16,7 +16,7 @@ charts:
         publicGw:
           service:
             extraAnnotations:
-              external-dns.alpha.kubernetes.io/hostname: gloo.oss-demo.hillghost.com
+              external-dns.alpha.kubernetes.io/hostname: gloo-secondary.oss-demo.hillghost.com
   gloo-1-13-1:
     chart: gloo
     namespace: gloo-system-1-13-1
@@ -29,4 +29,4 @@ charts:
         publicGw:
           service:
             extraAnnotations:
-              external-dns.alpha.kubernetes.io/hostname: gloo-secondary.oss-demo.hillghost.com
+              external-dns.alpha.kubernetes.io/hostname: gloo.oss-demo.hillghost.com

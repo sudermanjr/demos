@@ -13,6 +13,7 @@ spec:
   virtualHost:
     domains:
     - 'gloo.oss-demo.hillghost.com' # listen on these public domain names
+    - 'gloo-secondary.oss-demo.hillghost.com'
     routes:
     - matchers:
       - prefix: /hello-world
