@@ -1,0 +1,16 @@
+insights:
+  organization: "research-and-development"
+  cluster: "vcluster-test-1"
+  base64token: "TjVxdGphUGVWd3NBdjdzeFhFa1RyeG9lSE1ibkl2QUwxbEtIQVZ0d0pjektBSEtGNllZeG9ST0FiMEdycC10ZA=="
+nova:
+  enabled: true
+opa:
+  enabled: true
+pluto:
+  enabled: true
+polaris:
+  enabled: true
+trivy:
+  enabled: true
+workloads:
+  enabled: true
