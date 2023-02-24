@@ -1,0 +1,15 @@
+fullnameOverride: api
+resources:
+  limits:
+    cpu: 3
+    memory: 512Mi
+  requests:
+    cpu: 1
+    memory: 128Mi
+stressCmd: |
+  while true; do
+    DURATION=$((low + RANDOM%(500) + 10 ))s
+    WORKERS=$((low + RANDOM%(3) + 1 ))
+    MEM=$((low + RANDOM%(512) + 1 ))M
+    stress --cpu "$WORKERS" --vm "$WORKERS" --vm-bytes "$MEM" --timeout "$DURATION"
+  done
