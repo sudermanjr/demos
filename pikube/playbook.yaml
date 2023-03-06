@@ -12,17 +12,13 @@
           - curl
           - git
           - vim
+          - linux-modules-extra-raspi
         update_cache: true
     - name: Update all packages
       become: true
       apt:
         update_cache: true
         upgrade: dist
-- name: K3s cluster config
-  hosts:
-    - pikube_control_plane
-    - pikube_worker
-  tasks:
     - name: Run install script for control plane
       ansible.builtin.script: k3s-install.sh
       when: role == "control_plane"
@@ -31,6 +27,13 @@
       slurp:
         src: /var/lib/rancher/k3s/server/node-token
       register: k3s_token
+      when: role == "control_plane"
+    - name: Get kubeconfig
+      become: true
+      ansible.builtin.fetch:
+        src: /etc/rancher/k3s/k3s.yaml
+        dest: kubeconfig.yaml
+        flat: true
       when: role == "control_plane"
     - name: Install worker nodes
       ansible.builtin.script: k3s-install.sh
