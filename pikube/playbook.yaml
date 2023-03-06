@@ -36,8 +36,6 @@
         flat: true
       when: role == "control_plane"
     - name: Install worker nodes
-      ansible.builtin.script: k3s-install.sh
+      ansible.builtin.script: |
+        K3S_SERVER=https://pikube-0:6443 K3S_TOKEN={{ k3s_token}} k3s-install.sh
       when: role == "worker"
-      environment:
-        K3S_SERVER: 'https://pikube-0.suderman.us.com:6443'
-        K3S_TOKEN: "{{ k3s_token }}"
