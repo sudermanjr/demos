@@ -1,0 +1,13 @@
+pikube_control_plane:
+  hosts:
+    pikube-0:
+      ansible_host: pikube-0.suderman.us.com
+      role: control_plane
+pikube_worker:
+  hosts:
+    pikube-1:
+      ansible_host: pikube-1.suderman.us.com
+      role: worker
+    pikube-2:
+      ansible_host: pikube-2.suderman.us.com
+      role: worker
