@@ -5,6 +5,11 @@
   tasks:
     - name: ping
       ansible.builtin.ping:
+    - name: Add all sudermanjr authorized keys
+      ansible.posix.authorized_key:
+        user: asuderma
+        state: present
+        key: https://github.com/sudermanjr.keys
     - name: Install packages
       become: true
       apt:
