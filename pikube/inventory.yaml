@@ -14,3 +14,6 @@ pikube_worker:
     pikube-3:
       ansible_host: pikube-3.suderman.us.com
       role: worker
+    pikube-4:
+      ansible_host: pikube-4.suderman.us.com
+      role: worker
