@@ -32,12 +32,12 @@
       reboot:
       when: reboot_required_file.stat.exists == true
       become: true
-    - name: 
+    - name:
       ansible.builtin.git:
         repo: https://github.com/pimoroni/clean-shutdown.git
         dest: /tmp/onoffshim
     - name: Install on/off shim code
-      ansible.builtin.command: 'bash -c /tmp/onoffshim/setup.sh -y onoffshim'
+      ansible.builtin.command: 'bash -c "/tmp/onoffshim/setup.sh -y onoffshim"'
     - name: Run install script for control plane
       ansible.builtin.script: k3s-install.sh
       when: role == "control_plane"
