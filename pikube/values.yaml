@@ -9,3 +9,5 @@ pluto:
   enabled: true
 polaris:
   enabled: true
+trivy:
+  enabled: true
