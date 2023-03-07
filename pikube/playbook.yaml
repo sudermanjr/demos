@@ -54,3 +54,11 @@
       environment:
         K3S_URL: 'https://pikube-0:6443'
         K3S_TOKEN: "{{ hostvars['pikube-0']['k3s_token'] }}"
+- name: fix kubeconfig
+  hosts: localhost
+  tags: ['local']
+  tasks:
+    - replace:
+        path: kubeconfig.yaml
+        regexp: '\b(127\.0\.0\.1)(\d*)\b'
+        replace: 'pikube-0'
