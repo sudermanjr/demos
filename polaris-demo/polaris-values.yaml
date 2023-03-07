@@ -1,6 +1,6 @@
 image:
   repository: quay.io/sudermanjr/polaris
-  tag: arm
+  tag: dev
 webhook:
   enable: false
   validate: true
@@ -12,7 +12,10 @@ dashboard:
   podAdditionalLabels:
     team: security
   ingress:
-    enabled: false
+    enabled: true
+    ingressClassName: traefik
+    hosts:
+      - polaris.suderman.us.com
 config:
   checks:
     # reliability
