@@ -1,0 +1,9 @@
+insights:
+  organization: "research-and-development"
+  cluster: "pikube"
+pluto:
+  enabled: true
+polaris:
+  enabled: true
+workloads:
+  enabled: true
