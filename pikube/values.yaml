@@ -1,9 +1,11 @@
 insights:
-  organization: "research-and-development"
+  organization: "demo-webinar"
   cluster: "pikube"
+nova:
+  enabled: true
+opa:
+  enabled: true
 pluto:
   enabled: true
 polaris:
-  enabled: true
-workloads:
   enabled: true
