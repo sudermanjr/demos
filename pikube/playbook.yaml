@@ -31,7 +31,15 @@
       become: true
       slurp:
         src: /var/lib/rancher/k3s/server/node-token
-      register: k3s_token
+      register: k3s_token_local
+      when: role == "control_plane"
+    - name: Print returned information
+      ansible.builtin.debug:
+        msg: "{{ k3s_token_local['content'] | b64decode }}"
+      when: role == "control_plane"
+    - name: register token
+      ansible.builtin.set_fact:
+        k3s_token: "{{ k3s_token_local['content'] | b64decode | regex_replace('\n', '') }}"
       when: role == "control_plane"
     - name: Get kubeconfig
       become: true
@@ -44,5 +52,5 @@
       ansible.builtin.script: k3s-install.sh
       when: role == "worker"
       environment:
-        K3S_SERVER: 'https://pikube-0.suderman.us.com:6443'
-        K3S_TOKEN: "{{ k3s_token }}"
+        K3S_URL: 'https://pikube-0:6443'
+        K3S_TOKEN: "{{ hostvars['pikube-0']['k3s_token'] }}"
