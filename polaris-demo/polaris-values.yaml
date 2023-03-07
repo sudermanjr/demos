@@ -1,3 +1,6 @@
+image:
+  repository: quay.io/sudermanjr/polaris
+  tag: arm
 webhook:
   enable: false
   validate: true
@@ -5,16 +8,7 @@ webhook:
   failurePolicy: Ignore
   podAdditionalLabels:
     team: security
-  nodeSelector:
-    "kubernetes.io/arch": "amd64"
 dashboard:
-  basePath: "/polaris/"
-  nodeSelector:
-    "kubernetes.io/arch": "amd64"
-  tolerations:
-    - key: "kubernetes.io/arch"
-      value: "amd64"
-      effect: "NoSchedule"
   podAdditionalLabels:
     team: security
   ingress:

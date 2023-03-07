@@ -1,4 +1,4 @@
-- name: pikube-pre
+- name: pikube-configuration
   hosts:
     - pikube_control_plane
     - pikube_worker
@@ -24,6 +24,16 @@
       apt:
         update_cache: true
         upgrade: dist
+    - name: Check if reboot required
+      stat:
+        path: /var/run/reboot-required
+      register: reboot_required_file
+    - name: Reboot if required
+      reboot:
+      when: reboot_required_file.stat.exists == true
+      become: true
+    - name: Install on/off shim code
+      ansible.builtin.script: onoffshim.sh -y
     - name: Run install script for control plane
       ansible.builtin.script: k3s-install.sh
       when: role == "control_plane"
