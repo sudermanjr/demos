@@ -9,3 +9,5 @@ Guide - https://docs.k3s.io/quick-start
 
 Script - https://get.pimoroni.com/onoffshim
 Guide - https://shop.pimoroni.com/products/onoff-shim
+
+https://raw.githubusercontent.com/pimoroni/clean-shutdown/master/setup.sh

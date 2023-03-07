@@ -33,7 +33,8 @@
       when: reboot_required_file.stat.exists == true
       become: true
     - name: Install on/off shim code
-      ansible.builtin.script: onoffshim.sh -y
+      ansible.builtin.script:
+        cmd: 'onoffshim.sh -y onoffshim'
     - name: Run install script for control plane
       ansible.builtin.script: k3s-install.sh
       when: role == "control_plane"
