@@ -11,3 +11,4 @@ polaris:
   enabled: true
 trivy:
   enabled: true
+  schedule: 28 */3 * * *
