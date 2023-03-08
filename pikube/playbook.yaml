@@ -1,7 +1,7 @@
 - name: pikube-configuration
   hosts:
     - pikube_control_plane
-    - pikube_worker
+    - pikube_node
   tasks:
     - name: ping
       ansible.builtin.ping:
@@ -62,9 +62,9 @@
         dest: kubeconfig.yaml
         flat: true
       when: role == "control_plane"
-    - name: Install worker nodes
+    - name: Install node nodes
       ansible.builtin.script: k3s-install.sh
-      when: role == "worker"
+      when: role == "node"
       environment:
         K3S_URL: 'https://pikube-0:6443'
         K3S_TOKEN: "{{ hostvars['pikube-0']['k3s_token'] }}"
