@@ -10,5 +10,5 @@ pluto:
 polaris:
   enabled: true
 trivy:
-  enabled: true
+  enabled: false
   schedule: 28 */3 * * *
