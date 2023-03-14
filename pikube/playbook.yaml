@@ -41,6 +41,9 @@
     - name: Run install script for control plane
       ansible.builtin.script: k3s-install.sh
       when: role == "control_plane"
+      environment:
+        K3S_DATASTORE_ENDPOINT: "{{ postgres_connection_string }}"
+        K3S_NODE_TAINT: 'CriticalAddonsOnly=true:NoExecute'
     - name: get k3s token
       become: true
       slurp:
@@ -62,7 +65,7 @@
         dest: kubeconfig.yaml
         flat: true
       when: role == "control_plane"
-    - name: Install node nodes
+    - name: Install k3s for nodes
       ansible.builtin.script: k3s-install.sh
       when: role == "node"
       environment:
