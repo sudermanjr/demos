@@ -1,17 +1,15 @@
 package fairwinds
 
 violation[actionItem] {
- kinds := {"Deployment", "StatefulSet", "Daemonset"}
- container := input.spec.template.spec.containers[_]
- startswith(container.image, "k8s.gcr.io")
-
- msg := sprintf("container <%v> comes from the deprecated k8s gcr repo - %v", [container.name, container.image])
-   actionItem := {
-    "title": "K8s CGR registry",
-    "description": "Container image comes from deprecated k8s gcr repo",
-    "remediation": "Change to the new repo.",
-    "category": "Reliability",
-    "severity": 0.7,
+  kinds := {"Deployment", "StatefulSet", "Daemonset"}
+  container := input.spec.template.spec.containers[_]
+  startswith(container.image, "k8s.gcr.io")
+  actionItem := {
+     "title": "Deprecated K8s CGR registry",
+     "description": "Container image comes from deprecated k8s gcr repo",
+     "remediation": "Change the image to pull from registry.k8s.io - see the annoucnement at https://kubernetes.io/blog/2023/02/06/k8s-gcr-io-freeze-announcement/",
+     "category": "Reliability",
+     "severity": 0.7,
   }
 }
 
@@ -19,12 +17,11 @@ violation[actionItem] {
   kinds := {"Deployment", "StatefulSet", "Daemonset"}
   container := input.spec.template.spec.initContainers[_]
   startswith(container.image, "k8s.gcr.io")
-  msg := sprintf("container <%v> comes from the deprecated k8s gcr repo - %v", [container.name, container.image])
   actionItem := {
-    "title": "K8s CGR registry",
-    "description": "Container image comes from deprecated k8s gcr repo",
-    "remediation": "Change to the new repo.",
-    "category": "Reliability",
-    "severity": 0.7,
+     "title": "Deprecated K8s CGR registry",
+     "description": "Container image comes from deprecated k8s gcr repo",
+     "remediation": "Change the image to pull from registry.k8s.io - see the annoucnement at https://kubernetes.io/blog/2023/02/06/k8s-gcr-io-freeze-announcement/",
+     "category": "Reliability",
+     "severity": 0.7,
   }
 }
