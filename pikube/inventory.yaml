@@ -29,6 +29,6 @@ pikube_node:
     pikube-4:
       ansible_host: pikube-4.suderman.us.com
       role: node
-      #    pikube-5:
-      #      ansible_host: pikube-5.suderman.us.com
-      #      role: node
+    pikube-5:
+      ansible_host: pikube-5.suderman.us.com
+      role: node
