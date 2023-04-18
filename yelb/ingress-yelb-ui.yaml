@@ -6,7 +6,7 @@ metadata:
   name: yelb-ui
   namespace: yelb
 spec:
-  ingressClassName: nginx
+  ingressClassName: nginx-ingress
   rules:
   - host: yelb.oss-demo.hillghost.com
     http:
