@@ -1,0 +1,14 @@
+options:
+  organization: fairwinds-production
+  baseBranch: main
+  repositoryName: FairwindsOps/sudermanjr-demos
+
+manifests:
+  yaml:
+  - ./demo-app
+
+reports:
+  trivy:
+    enabled: false
+  opa:
+    enabled: true
