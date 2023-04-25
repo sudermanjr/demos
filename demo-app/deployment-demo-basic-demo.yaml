@@ -26,7 +26,7 @@ spec:
           #labelSelector:
       containers:
         - name: basic-demo
-          image: "quay.io/fairwinds/docker-demo:latest"
+          image: "quay.io/fairwinds/docker-demo:1.2.0"
           imagePullPolicy: Always
           env:
             - name: REFRESH_INTERVAL
