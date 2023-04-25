@@ -3,7 +3,6 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: demo-basic-demo
-  namespace: demo
 spec:
   maxUnavailable: 1
   selector:

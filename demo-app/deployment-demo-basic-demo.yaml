@@ -3,7 +3,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: demo-basic-demo
-  namespace: demo
   labels:
     app.kubernetes.io/name: basic-demo
     helm.sh/chart: basic-demo-0.5.2
