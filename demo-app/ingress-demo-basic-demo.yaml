@@ -15,7 +15,7 @@ spec:
   tls:
     - hosts:
         - "demo.sandbox.hillghost.com"
-      secretName: karpetner-demo-tls
+      secretName: basic-demo-tls
   rules:
     - host: "demo.sandbox.hillghost.com"
       http:
