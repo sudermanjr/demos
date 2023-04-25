@@ -34,7 +34,7 @@ spec:
             - name: TITLE
               value: "Kubernetes Demo"
             - name: METADATA
-              value: ""
+              value: "Andy's Kube Demo for IDP!"
           ports:
             - name: http
               containerPort: 8080
