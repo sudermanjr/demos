@@ -14,10 +14,10 @@ spec:
   ingressClassName: nginx-ingress
   tls:
     - hosts:
-        - "demo.oss-demo.hillghost.com"
+        - "demo.sandbox.hillghost.com"
       secretName: karpetner-demo-tls
   rules:
-    - host: "demo.oss-demo.hillghost.com"
+    - host: "demo.sandbox.hillghost.com"
       http:
         paths:
           - path: /
