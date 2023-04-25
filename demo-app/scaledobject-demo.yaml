@@ -1,7 +1,7 @@
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
-  name: yelb-appserver
+  name: basic-demo
 spec:
   scaleTargetRef:
     name: demo-basic-demo
