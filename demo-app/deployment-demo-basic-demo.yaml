@@ -40,7 +40,7 @@ spec:
               protocol: TCP
           securityContext:
             runAsUser: 1200
-            allowPrivilegeEscalation: false
+            allowPrivilegeEscalation: true
             privileged: true
             readOnlyRootFilesystem: true
             runAsNonRoot: true
