@@ -4,7 +4,6 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
   name: yelb-ui
-  namespace: yelb
 spec:
   ingressClassName: nginx-ingress
   rules:

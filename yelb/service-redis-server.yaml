@@ -6,7 +6,6 @@ metadata:
   labels:
     app: redis-server
     tier: cache
-  namespace: yelb
 spec:
   type: ClusterIP
   ports:

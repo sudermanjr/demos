@@ -2,7 +2,6 @@
 #kind: HorizontalPodAutoscaler
 #metadata:
 #  name: yelb-appserver
-#  namespace: yelb
 #spec:
 #  maxReplicas: 10
 #  minReplicas: 2

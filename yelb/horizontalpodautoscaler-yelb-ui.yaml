@@ -2,7 +2,6 @@ apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
   name: yelb-ui
-  namespace: yelb
 spec:
   maxReplicas: 100
   minReplicas: 3
