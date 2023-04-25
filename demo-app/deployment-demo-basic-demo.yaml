@@ -23,7 +23,6 @@ spec:
         - maxSkew: 1
           topologyKey: fargle
           whenUnsatisfiable: ScheduleAnyway
-          #labelSelector:
       containers:
         - name: basic-demo
           image: "quay.io/fairwinds/docker-demo:1.2.0"
@@ -42,7 +41,7 @@ spec:
           securityContext:
             runAsUser: 1200
             allowPrivilegeEscalation: false
-            privileged: false
+            privileged: true
             readOnlyRootFilesystem: true
             runAsNonRoot: true
             capabilities:
@@ -58,7 +57,7 @@ spec:
               port: http
           resources:
             limits:
-              cpu: 500m
+              cpu: 2
               memory: 100Mi
             requests:
               cpu: 500m
