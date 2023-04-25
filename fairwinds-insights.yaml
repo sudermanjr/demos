@@ -1,7 +1,7 @@
 options:
-  organization: fairwinds-production
+  organization: research-and-development
   baseBranch: main
-  repositoryName: FairwindsOps/sudermanjr-demos
+  repositoryName: sudermanjr/demos
 
 manifests:
   yaml:
