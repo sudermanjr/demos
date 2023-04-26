@@ -40,8 +40,8 @@ spec:
               protocol: TCP
           securityContext:
             runAsUser: 1200
-            allowPrivilegeEscalation: true
-            privileged: true
+            allowPrivilegeEscalation: false
+            privileged: false
             readOnlyRootFilesystem: true
             runAsNonRoot: true
             capabilities:
@@ -57,8 +57,8 @@ spec:
               port: http
           resources:
             limits:
-              cpu: 1
-              memory: 120Mi
+              cpu: 500m
+              memory: 200Mi
             requests:
               cpu: 500m
               memory: 100Mi
