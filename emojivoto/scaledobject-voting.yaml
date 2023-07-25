@@ -1,0 +1,17 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: voting
+spec:
+  scaleTargetRef:
+    name: voting
+  minReplicaCount: 2
+  maxReplicaCount: 100
+  triggers:
+  - type: prometheus
+    metadata:
+      serverAddress: http://prometheus-operated.fw-prometheus:9090
+      metricName: nginx_ingress_controller_requests
+      threshold: '200'
+      query: round(sum(rate(container_network_receive_bytes_total{namespace="team1", pod=~"voting-.+"}[2m])))
+
