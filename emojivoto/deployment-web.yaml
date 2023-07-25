@@ -28,6 +28,8 @@ spec:
           value: voting-svc:8080
         - name: INDEX_BUNDLE
           value: dist/index_bundle.js
+        - name: OC_AGENT_HOST
+          value: "default-deployment-collector.opentelemetry-operator-system:55681"
         image: docker.l5d.io/buoyantio/emojivoto-web:v11
         name: web-svc
         ports:

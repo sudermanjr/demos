@@ -24,6 +24,8 @@ spec:
         env:
         - name: WEB_HOST
           value: web-svc.emojivoto:80
+        - name: OC_AGENT_HOST
+          value: "default-deployment-collector.opentelemetry-operator-system:55681"
         image: docker.l5d.io/buoyantio/emojivoto-web:v11
         name: vote-bot
         resources:

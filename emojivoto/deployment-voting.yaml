@@ -24,6 +24,8 @@ spec:
           value: "8080"
         - name: PROM_PORT
           value: "8801"
+        - name: OC_AGENT_HOST
+          value: "default-deployment-collector.opentelemetry-operator-system:55681"
         image: docker.l5d.io/buoyantio/emojivoto-voting-svc:v11
         name: voting-svc
         ports:
