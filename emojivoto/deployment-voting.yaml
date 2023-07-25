@@ -38,5 +38,13 @@ spec:
           limits:
             cpu: 100m
             memory: 50Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
       serviceAccountName: voting
 
