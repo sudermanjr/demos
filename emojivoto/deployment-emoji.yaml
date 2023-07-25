@@ -25,7 +25,7 @@ spec:
         - name: PROM_PORT
           value: "8801"
         - name: OC_AGENT_HOST
-          value: "default-deployment-collector.opentelemetry-operator-system:55681"
+          value: "default-deployment-collector.opentelemetry-operator-system:55678"
         image: docker.l5d.io/buoyantio/emojivoto-emoji-svc:v11
         name: emoji-svc
         ports:
