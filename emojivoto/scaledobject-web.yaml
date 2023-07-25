@@ -6,7 +6,7 @@ spec:
   scaleTargetRef:
     name: web
   minReplicaCount: 2
-  maxReplicaCount: 100
+  maxReplicaCount: 2
   triggers:
   - type: prometheus
     metadata:

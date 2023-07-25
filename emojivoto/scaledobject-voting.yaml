@@ -6,7 +6,7 @@ spec:
   scaleTargetRef:
     name: voting
   minReplicaCount: 2
-  maxReplicaCount: 100
+  maxReplicaCount: 2
   triggers:
   - type: prometheus
     metadata:
