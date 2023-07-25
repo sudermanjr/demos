@@ -28,5 +28,8 @@ spec:
         name: vote-bot
         resources:
           requests:
-            cpu: 10m
-
+            cpu: 20m
+            memory: 50Mi
+          limits:
+            cpu: 20m
+            memory: 50Mi

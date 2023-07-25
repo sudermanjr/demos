@@ -34,5 +34,9 @@ spec:
         resources:
           requests:
             cpu: 100m
+            memory: 50Mi
+          limits:
+            cpu: 100m
+            memory: 50Mi
       serviceAccountName: voting
 
