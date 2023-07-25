@@ -41,3 +41,4 @@ spec:
           privileged: false
           readOnlyRootFilesystem: true
           runAsNonRoot: true
+          runAsUser: 1001
