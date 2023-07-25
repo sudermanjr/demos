@@ -28,6 +28,7 @@ spec:
           privileged: false
           readOnlyRootFilesystem: true
           runAsNonRoot: true
+          runAsUser: 1001
         resources:
           requests:
             cpu: 100m
