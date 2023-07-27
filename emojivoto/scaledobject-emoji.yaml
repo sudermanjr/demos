@@ -6,7 +6,7 @@ spec:
   scaleTargetRef:
     name: emoji
   minReplicaCount: 2
-  maxReplicaCount: 2
+  maxReplicaCount: 30
   triggers:
   - type: prometheus
     metadata:
