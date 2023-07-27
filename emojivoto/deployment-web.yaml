@@ -4,19 +4,19 @@ metadata:
   labels:
     app.kubernetes.io/name: web
     app.kubernetes.io/part-of: emojivoto
-    app.kubernetes.io/version: v11
+    app.kubernetes.io/version: v12
   name: web
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: web-svc
-      version: v11
+      version: v12
   template:
     metadata:
       labels:
         app: web-svc
-        version: v11
+        version: v12
     spec:
       containers:
       - env:
@@ -30,7 +30,7 @@ spec:
           value: dist/index_bundle.js
         - name: OC_AGENT_HOST
           value: "default-deployment-collector.opentelemetry-operator-system:55678"
-        image: docker.l5d.io/buoyantio/emojivoto-web:v11
+        image: docker.l5d.io/buoyantio/emojivoto-web:v12
         name: web-svc
         ports:
         - containerPort: 8080

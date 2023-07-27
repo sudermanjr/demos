@@ -4,18 +4,18 @@ metadata:
   labels:
     app.kubernetes.io/name: voting
     app.kubernetes.io/part-of: emojivoto
-    app.kubernetes.io/version: v11
+    app.kubernetes.io/version: v12
   name: voting
 spec:
   selector:
     matchLabels:
       app: voting-svc
-      version: v11
+      version: v12
   template:
     metadata:
       labels:
         app: voting-svc
-        version: v11
+        version: v12
     spec:
       containers:
       - env:
@@ -25,7 +25,7 @@ spec:
           value: "8801"
         - name: OC_AGENT_HOST
           value: "default-deployment-collector.opentelemetry-operator-system:55678"
-        image: docker.l5d.io/buoyantio/emojivoto-voting-svc:v11
+        image: docker.l5d.io/buoyantio/emojivoto-voting-svc:v12
         name: voting-svc
         ports:
         - containerPort: 8080

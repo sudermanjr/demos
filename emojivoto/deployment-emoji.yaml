@@ -4,19 +4,19 @@ metadata:
   labels:
     app.kubernetes.io/name: emoji
     app.kubernetes.io/part-of: emojivoto
-    app.kubernetes.io/version: v11
+    app.kubernetes.io/version: v12
   name: emoji
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: emoji-svc
-      version: v11
+      version: v12
   template:
     metadata:
       labels:
         app: emoji-svc
-        version: v11
+        version: v12
     spec:
       containers:
       - env:
@@ -26,7 +26,7 @@ spec:
           value: "8801"
         - name: OC_AGENT_HOST
           value: "default-deployment-collector.opentelemetry-operator-system:55678"
-        image: docker.l5d.io/buoyantio/emojivoto-emoji-svc:v11
+        image: docker.l5d.io/buoyantio/emojivoto-emoji-svc:v12
         name: emoji-svc
         ports:
         - containerPort: 8080
