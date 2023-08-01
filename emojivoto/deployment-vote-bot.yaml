@@ -29,10 +29,10 @@ spec:
         name: vote-bot
         resources:
           requests:
-            cpu: 20m
+            cpu: 25m
             memory: 50Mi
           limits:
-            cpu: 20m
+            cpu: 25m
             memory: 50Mi
         securityContext:
           allowPrivilegeEscalation: false
