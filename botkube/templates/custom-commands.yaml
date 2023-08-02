@@ -1,0 +1,15 @@
+templates:
+  - trigger:
+      command:
+        regex: '^k (?:\s+(-A|-a))*\s?$'
+    type: "parser:table:space"
+    message:
+      selects:
+        - name: "Jobs"
+          keyTpl: "{{ .Namespace }}/{{ .Name }}"
+      actions:
+        delete: "kubectl delete job {{ .Name }} -n {{ .Namespace }}"
+      preview: |
+        Name:        {{ .Name }}
+        Namespace:   {{ .Namespace }}
+        Status:      {{ .Status }}
