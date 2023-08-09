@@ -12,6 +12,6 @@ spec:
     metadata:
       serverAddress: http://prometheus-operated.fw-prometheus:9090
       metricName: nginx_ingress_controller_requests
-      threshold: '600'
+      threshold: '1200'
       query: round(sum(rate(container_network_receive_bytes_total{namespace="team1", pod=~"emoji-.+"}[2m])))
 
