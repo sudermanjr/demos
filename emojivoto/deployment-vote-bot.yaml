@@ -27,13 +27,6 @@ spec:
           value: "default-deployment-collector.opentelemetry-operator-system:55678"
         image: docker.l5d.io/buoyantio/emojivoto-web:v12
         name: vote-bot
-        resources:
-          requests:
-            cpu: 25m
-            memory: 50Mi
-          limits:
-            cpu: 25m
-            memory: 50Mi
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:

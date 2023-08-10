@@ -32,13 +32,6 @@ spec:
           name: grpc
         - containerPort: 8801
           name: prom
-        resources:
-          requests:
-            cpu: 50m
-            memory: 40Mi
-          limits:
-            cpu: 50m
-            memory: 49Mi
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
