@@ -12,6 +12,6 @@ spec:
     metadata:
       serverAddress: http://prometheus-operated.prometheus:9090
       metricName: nginx_ingress_controller_requests
-      threshold: '20000'
+      threshold: '300'
       query: round(sum(rate(nginx_ingress_controller_requests{ingress="yelb-ui"}[1m])))
 
