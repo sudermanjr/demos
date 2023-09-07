@@ -3,7 +3,26 @@
 import { sleep, group, check } from 'k6'
 import http from 'k6/http'
 
-export const options = { vus: 10, iterations: '10' }
+export const options = {
+    thresholds: {
+        http_req_failed: ['rate<0.01'], // http errors should be less than 1%
+        http_req_duration: ['p(95)<200'], // 95% of requests should be below 200ms
+    },
+    scenarios: {
+      ramping_arrival_scenario: {
+        executor: 'ramping-arrival-rate',
+        startRate: 300,
+        timeUnit: '1m',
+        preAllocatedVUs: 50,
+        stages: [
+          { target: 12000, duration: '1h' },
+          { target: 18000, duration: '3h' },
+          { target: 6000, duration: '4h' },
+          { target: 60000, duration: '2h' },
+        ],
+      },
+  },
+};
 
 export default function main() {
   let target=`${__ENV.TARGET}`
