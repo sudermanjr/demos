@@ -10,7 +10,7 @@ spec:
   triggers:
   - type: prometheus
     metadata:
-      serverAddress: http://prometheus-operated.prometheus:9090
+      serverAddress: http://prometheus-kube-prometheus-prometheus.fw-prometheus:9090
       metricName: nginx_ingress_controller_requests
       threshold: '200000'
       query: round(sum(rate(container_network_receive_bytes_total{namespace="yelb", pod=~"yelb-appserver-.+"}[2m])))
