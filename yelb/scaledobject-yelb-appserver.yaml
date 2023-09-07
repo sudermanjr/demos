@@ -6,12 +6,12 @@ spec:
   scaleTargetRef:
     name: yelb-appserver
   minReplicaCount: 2
-  maxReplicaCount: 100
+  maxReplicaCount: 40
   triggers:
   - type: prometheus
     metadata:
       serverAddress: http://prometheus-operated.prometheus:9090
       metricName: nginx_ingress_controller_requests
-      threshold: '20'
-      query: round(sum(rate(nginx_ingress_controller_requests{service="yelb-appserver"}[1m])))
+      threshold: '2000'
+      query: round(sum(rate(container_network_receive_bytes_total{namespace="yelb", pod=~"yelb-appserver-.+"}[2m])))
 
