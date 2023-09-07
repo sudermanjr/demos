@@ -31,13 +31,6 @@ spec:
           httpGet:
             path: /api/getstats
             port: 4567
-        resources:
-          requests:
-            cpu: 200m
-            memory: 100Mi
-          limits:
-            cpu: 200m
-            memory: 100Mi
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
