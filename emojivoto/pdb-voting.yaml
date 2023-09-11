@@ -1,0 +1,9 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: voting
+spec:
+  minAvailable: 90%
+  selector:
+    matchLabels:
+      app: voting-svc

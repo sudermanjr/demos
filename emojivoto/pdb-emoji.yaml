@@ -1,0 +1,9 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: emoji
+spec:
+  minAvailable: 90%
+  selector:
+    matchLabels:
+      app: emoji-svc
