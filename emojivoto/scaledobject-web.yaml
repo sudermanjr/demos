@@ -14,4 +14,9 @@ spec:
       metricName: receive_bytes_total
       threshold: '15000'
       query: round(sum(rate(container_network_receive_bytes_total{namespace="team1", pod=~"web-.+"}[2m])))
-
+  - type: prometheus
+    metadata:
+      serverAddress: http://prometheus-operated.fw-prometheus:9090
+      metricName: latency_p95
+      threshold: '.5'
+      query: histogram_quantile(0.95, sum by(le, ingress) (rate(nginx_ingress_controller_response_duration_seconds_bucket{ingress=~".*",ingress!="",exported_namespace=~"team1"}[2m30s])))
