@@ -1,0 +1,7 @@
+default:
+  image:
+    pullPolicy: Always
+components:
+  frontendProxy:
+    service:
+      type: LoadBalancer

@@ -1,0 +1,102 @@
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otel-demo-frontend
+  labels:
+    helm.sh/chart: opentelemetry-demo-0.23.0
+    
+    opentelemetry.io/name: otel-demo-frontend
+    app.kubernetes.io/instance: otel-demo
+    app.kubernetes.io/component: frontend
+    app.kubernetes.io/name: otel-demo-frontend
+    app.kubernetes.io/version: "1.4.0"
+    app.kubernetes.io/part-of: opentelemetry-demo
+    app.kubernetes.io/managed-by: Helm
+spec:
+  selector:
+    matchLabels:
+      
+      opentelemetry.io/name: otel-demo-frontend
+  template:
+    metadata:
+      labels:
+        
+        opentelemetry.io/name: otel-demo-frontend
+        app.kubernetes.io/instance: otel-demo
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/name: otel-demo-frontend
+    spec:
+      serviceAccountName: otel-demo
+      containers:
+        - name: frontend
+          image: 'ghcr.io/open-telemetry/demo:1.4.0-frontend'
+          imagePullPolicy: Always
+          ports:
+          
+          - containerPort: 8080
+            name: service
+          env:
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.labels['app.kubernetes.io/component']
+          - name: OTEL_K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: OTEL_K8S_NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: OTEL_K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: OTEL_K8S_POD_UID
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.uid
+          - name: OTEL_COLLECTOR_NAME
+            value: 'otel-demo-otelcol'
+          - name: OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE
+            value: cumulative
+          - name: FRONTEND_PORT
+            value: "8080"
+          - name: FRONTEND_ADDR
+            value: :8080
+          - name: AD_SERVICE_ADDR
+            value: 'otel-demo-adservice:8080'
+          - name: CART_SERVICE_ADDR
+            value: 'otel-demo-cartservice:8080'
+          - name: CHECKOUT_SERVICE_ADDR
+            value: 'otel-demo-checkoutservice:8080'
+          - name: CURRENCY_SERVICE_ADDR
+            value: 'otel-demo-currencyservice:8080'
+          - name: PRODUCT_CATALOG_SERVICE_ADDR
+            value: 'otel-demo-productcatalogservice:8080'
+          - name: RECOMMENDATION_SERVICE_ADDR
+            value: 'otel-demo-recommendationservice:8080'
+          - name: SHIPPING_SERVICE_ADDR
+            value: 'otel-demo-shippingservice:8080'
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://$(OTEL_COLLECTOR_NAME):4317
+          - name: WEB_OTEL_SERVICE_NAME
+            value: frontend-web
+          - name: PUBLIC_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+            value: http://localhost:4318/v1/traces
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: service.name=$(OTEL_SERVICE_NAME),service.instance.id=$(OTEL_K8S_POD_UID),service.namespace=opentelemetry-demo,k8s.namespace.name=$(OTEL_K8S_NAMESPACE),k8s.node.name=$(OTEL_K8S_NODE_NAME),k8s.pod.name=$(OTEL_K8S_POD_NAME)
+          resources:
+            limits:
+              memory: 200Mi
+          securityContext:
+            runAsGroup: 1001
+            runAsNonRoot: true
+            runAsUser: 1001
+

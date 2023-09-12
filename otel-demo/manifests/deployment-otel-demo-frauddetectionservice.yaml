@@ -1,0 +1,82 @@
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otel-demo-frauddetectionservice
+  labels:
+    helm.sh/chart: opentelemetry-demo-0.23.0
+    
+    opentelemetry.io/name: otel-demo-frauddetectionservice
+    app.kubernetes.io/instance: otel-demo
+    app.kubernetes.io/component: frauddetectionservice
+    app.kubernetes.io/name: otel-demo-frauddetectionservice
+    app.kubernetes.io/version: "1.4.0"
+    app.kubernetes.io/part-of: opentelemetry-demo
+    app.kubernetes.io/managed-by: Helm
+spec:
+  selector:
+    matchLabels:
+      
+      opentelemetry.io/name: otel-demo-frauddetectionservice
+  template:
+    metadata:
+      labels:
+        
+        opentelemetry.io/name: otel-demo-frauddetectionservice
+        app.kubernetes.io/instance: otel-demo
+        app.kubernetes.io/component: frauddetectionservice
+        app.kubernetes.io/name: otel-demo-frauddetectionservice
+    spec:
+      serviceAccountName: otel-demo
+      containers:
+        - name: frauddetectionservice
+          image: 'ghcr.io/open-telemetry/demo:1.4.0-frauddetectionservice'
+          imagePullPolicy: Always
+          env:
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.labels['app.kubernetes.io/component']
+          - name: OTEL_K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: OTEL_K8S_NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: OTEL_K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: OTEL_K8S_POD_UID
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.uid
+          - name: OTEL_COLLECTOR_NAME
+            value: 'otel-demo-otelcol'
+          - name: OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE
+            value: cumulative
+          - name: KAFKA_SERVICE_ADDR
+            value: 'otel-demo-kafka:9092'
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://$(OTEL_COLLECTOR_NAME):4317
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: service.name=$(OTEL_SERVICE_NAME),service.instance.id=$(OTEL_K8S_POD_UID),service.namespace=opentelemetry-demo,k8s.namespace.name=$(OTEL_K8S_NAMESPACE),k8s.node.name=$(OTEL_K8S_NODE_NAME),k8s.pod.name=$(OTEL_K8S_POD_NAME)
+          resources:
+            limits:
+              memory: 200Mi
+      initContainers:
+        - command:
+          - sh
+          - -c
+          - until nc -z -v -w30 otel-demo-kafka 9092; do echo waiting
+            for kafka; sleep 2; done;
+          image: busybox:latest
+          name: wait-for-kafka
+
