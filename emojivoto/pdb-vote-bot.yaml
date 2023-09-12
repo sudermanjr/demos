@@ -3,7 +3,7 @@ kind: PodDisruptionBudget
 metadata:
   name: vote-bot
 spec:
-  minAvailable: 80%
+  maxUnavailable: 1
   selector:
     matchLabels:
       app: vote-bot
