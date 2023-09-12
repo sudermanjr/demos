@@ -3,7 +3,7 @@ kind: PodDisruptionBudget
 metadata:
   name: web
 spec:
-  minAvailable: 90%
+  minAvailable: 80%
   selector:
     matchLabels:
       app: web-svc

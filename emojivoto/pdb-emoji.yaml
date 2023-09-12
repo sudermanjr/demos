@@ -3,7 +3,7 @@ kind: PodDisruptionBudget
 metadata:
   name: emoji
 spec:
-  minAvailable: 90%
+  minAvailable: 80%
   selector:
     matchLabels:
       app: emoji-svc

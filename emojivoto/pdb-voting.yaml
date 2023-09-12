@@ -3,7 +3,7 @@ kind: PodDisruptionBudget
 metadata:
   name: voting
 spec:
-  minAvailable: 90%
+  minAvailable: 80%
   selector:
     matchLabels:
       app: voting-svc
