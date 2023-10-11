@@ -13,14 +13,14 @@ spec:
       paths:
       - backend:
           service:
-            name: yelb-appserver
+            name: keda-add-ons-http-interceptor-proxy
             port:
               name: http
         path: /api
         pathType: ImplementationSpecific
       - backend:
           service:
-            name: yelb-ui
+            name: keda-add-ons-http-interceptor-proxy
             port:
               name: http
         path: /
