@@ -5,5 +5,5 @@ metadata:
 spec:
   scaleTargetRef:
     deployment: yelb-appserver
-    service: yelb-appserver-intercept
+    service: yelb-appserver
     port: 4567
