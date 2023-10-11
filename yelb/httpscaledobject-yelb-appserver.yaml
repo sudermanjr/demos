@@ -1,9 +1,0 @@
-kind: HTTPScaledObject
-apiVersion: http.keda.sh/v1alpha1
-metadata:
-  name: yelb-appserver
-spec:
-  scaleTargetRef:
-    deployment: yelb-appserver
-    service: yelb-appserver
-    port: 4567
