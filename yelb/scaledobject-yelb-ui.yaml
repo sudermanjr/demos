@@ -1,17 +1,17 @@
-apiVersion: keda.sh/v1alpha1
-kind: ScaledObject
-metadata:
-  name: yelb-ui
-spec:
-  scaleTargetRef:
-    name: yelb-ui
-  minReplicaCount: 2
-  maxReplicaCount: 40
-  triggers:
-  - type: prometheus
-    metadata:
-      serverAddress: http://prometheus-kube-prometheus-prometheus.fw-prometheus:9090
-      metricName: nginx_ingress_controller_requests
-      threshold: '50'
-      query: round(sum(rate(nginx_ingress_controller_requests{ingress="yelb-ui"}[1m])))
-
+#apiVersion: keda.sh/v1alpha1
+#kind: ScaledObject
+#metadata:
+#  name: yelb-ui
+#spec:
+#  scaleTargetRef:
+#    name: yelb-ui
+#  minReplicaCount: 2
+#  maxReplicaCount: 40
+#  triggers:
+#  - type: prometheus
+#    metadata:
+#      serverAddress: http://prometheus-kube-prometheus-prometheus.fw-prometheus:9090
+#      metricName: nginx_ingress_controller_requests
+#      threshold: '50'
+#      query: round(sum(rate(nginx_ingress_controller_requests{ingress="yelb-ui"}[1m])))
+#
