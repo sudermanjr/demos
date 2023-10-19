@@ -3,7 +3,8 @@ apiVersion: http.keda.sh/v1alpha1
 metadata:
   name: yelb-appserver
 spec:
-  host: "yelb.sandbox.hillghost.com"
+  hosts:
+    - "yelb.sandbox.hillghost.com"
   pathPrefixes:
     - /api
   replicas:
