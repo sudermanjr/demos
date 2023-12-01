@@ -4,4 +4,4 @@ curl -LO https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/
 mv cert-manager.crds.yaml ./manifests/cert-manager/
 helm template cert-manager -n cert-manager jetstack/cert-manager --version 1.13.2  | kubectl slice -f - -o ./manifests/cert-manager/
 
-helm template polaris -n polaris fairwinds-stable/polaris | kubectl slice -f - -o ./manifests/polaris/
+helm template polaris -n polaris fairwinds-stable/polaris --values polaris.values.yaml | kubectl slice -f - -o ./manifests/polaris/

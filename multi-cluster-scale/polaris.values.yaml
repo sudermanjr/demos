@@ -1,0 +1,238 @@
+webhook:
+  enable: false
+  validate: true
+  mutate: true
+  failurePolicy: Ignore
+  podAdditionalLabels:
+    team: security
+dashboard:
+  podAdditionalLabels:
+    team: security
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    hosts:
+      - polaris.suderman.us.com
+config:
+  checks:
+    # reliability
+    deploymentMissingReplicas: warning
+    priorityClassNotSet: warning
+    tagNotSpecified: warning
+    pullPolicyNotAlways: warning
+    readinessProbeMissing: warning
+    livenessProbeMissing: warning
+    metadataAndNameMismatched: warning
+    pdbDisruptionsIsZero: warning
+    missingPodDisruptionBudget: warning
+
+    # efficiency
+    cpuRequestsMissing: danger
+    cpuLimitsMissing: warning
+    memoryRequestsMissing: danger
+    memoryLimitsMissing: warning
+
+    # security
+    hostIPCSet: ignore
+    hostPIDSet: ignore
+    notReadOnlyRootFilesystem: ignore
+    privilegeEscalationAllowed: ignore
+    runAsRootAllowed: ignore
+    runAsPrivileged: ignore
+    dangerousCapabilities: ignore
+    insecureCapabilities: ignore
+    hostNetworkSet: ignore
+    hostPortSet: ignore
+    tlsSettingsMissing: ignore
+
+    # custom
+    imageRegistry: warning
+    resourceLimits: warning
+    hostPathMount: warning
+
+    # Karpenter
+    disallowKarpenterBlock: warning
+    disallowNodeTypeSelection: warning
+
+  customChecks:
+    imageRegistry:
+      successMessage: Image comes from allowed registries
+      failureMessage: Image should not be from disallowed registry
+      category: FWCustom
+      target: Container
+      schema:
+        '$schema': http://json-schema.org/draft-07/schema
+        type: object
+        properties:
+          image:
+            type: string
+            anyOf:
+              - type: string
+                pattern: ^us-docker.pkg.dev
+              - pattern: ^docker.io/kindest
+                type: string
+              - pattern: ^k8s.gcr.io
+                type: string
+              - pattern: ^quay.io/fairwinds
+                type: string
+              - pattern: ^quay.io/jetstack
+                type: string
+
+    disallowKarpenterBlock:
+      successMessage: |
+        PodTemplate does not have the 'karpenter.sh/do-not-evict: true' annotation
+      failureMessage: |
+        Please set 'karpenter.sh/do-not-evict' annotation to false
+      category: Karpenter
+      target: PodTemplate
+      schema:
+        '$schema': http://json-schema.org/draft-07/schema
+        type: object
+        properties:
+          metadata:
+            type: object
+            properties:
+              annotations:
+                type: object
+                properties:
+                  'karpenter.sh/do-not-evict':
+                    not:
+                      const: "true"
+
+    disallowNodeTypeSelection:
+      successMessage: |
+        No "node.kubernetes.io/instance-type" nodeSelector is applied
+      failureMessage: |
+        Please remove the "node.kubernetes.io/instance-type" nodeSelector
+      category: Karpenter
+      target: PodTemplate
+      schema:
+        '$schema': http://json-schema.org/draft-07/schema
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              nodeSelector:
+                not:
+                  anyOf:
+                    - required: ["node.kubernetes.io/instance-type"]
+
+    resourceLimits:
+      containers:
+        exclude:
+        - initContainer
+      successMessage: Resource limits are within the required range
+      failureMessage: Resource limits should be within the required range
+      category: FWCustom
+      target: Container
+      schema:
+        '$schema': http://json-schema.org/draft-07/schema
+        type: object
+        required:
+        - resources
+        properties:
+          resources:
+            type: object
+            required:
+            - limits
+            properties:
+              limits:
+                type: object
+                required:
+                - memory
+                - cpu
+                properties:
+                  memory:
+                    type: string
+                    resourceMinimum: 100Mi
+                    resourceMaximum: 1Gi
+                  cpu:
+                    type: string
+                    resourceMinimum: 100m
+                    resourceMaximum: "2"
+
+    hostPathMount:
+      successMessage: No volumes use hostPath
+      failureMessage: Hostpath mounts are not permitted
+      category: FWCustom
+      target: PodSpec
+      schema:
+        '$schema': http://json-schema.org/draft-07/schema
+        type: object
+        properties:
+          volumes:
+            type: array
+            items:
+              type: object
+              not:
+                anyOf:
+                  - required: ["hostPath"]
+
+  mutations:
+    - pullPolicyNotAlways
+
+  exemptions:
+    - controllerNames:
+        - cert-manager
+      rules:
+        - missingPodDisruptionBudget
+    - controllerNames:
+        - kube-apiserver
+        - kube-proxy
+        - kube-scheduler
+        - etcd-manager-events
+        - kube-controller-manager
+        - kube-dns
+        - etcd-manager-main
+        - local-path-provisioner
+        - kindnet
+        - kube-scheduler-kind-control-plane
+        - metrics-server
+        - coredns
+      rules:
+        - hostPortSet
+        - hostNetworkSet
+        - readinessProbeMissing
+        - livenessProbeMissing
+        - cpuRequestsMissing
+        - cpuLimitsMissing
+        - memoryRequestsMissing
+        - memoryLimitsMissing
+        - runAsRootAllowed
+        - runAsPrivileged
+        - notReadOnlyRootFilesystem
+        - hostPIDSet
+        - teamLabel
+        - resourceLimits
+        - pullPolicyNotAlways
+        - insecureCapabilities
+        - dangerousCapabilities
+        - privilegeEscalationAllowed
+        - deploymentMissingReplicas
+        - hostPathMount
+        - archAnnotation
+
+    - controllerNames:
+        - cert-manager
+        - cert-manager-ca-injector
+        - cert-manager-webhook
+      rules:
+        - notReadOnlyRootFilesystem
+        - runAsRootAllowed
+        - readinessProbeMissing
+        - livenessProbeMissing
+        - deploymentMissingReplicas
+        - cpuRequestsMissing
+        - cpuLimitsMissing
+        - memoryRequestsMissing
+        - memoryLimitsMissing
+        - insecureCapabilities
+        - teamLabel
+        - resourceLimits
+
+    - controllerNames:
+        - kindnet
+      rules:
+        - hostNetworkSet
+        - dangerousCapabilities
