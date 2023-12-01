@@ -5,15 +5,20 @@ metadata:
   annotations:
   labels:
     app.kubernetes.io/name: polaris
-    helm.sh/chart: polaris-5.16.0
+    helm.sh/chart: polaris-5.17.0
     app.kubernetes.io/instance: polaris
   name: polaris
 spec:
+  ingressClassName: traefik
   rules:
   - host: polaris.suderman.us.com
     http:
       paths:
       - backend:
-          serviceName: polaris-dashboard
-          servicePort: 80
+          service:
+            name: polaris-dashboard
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
 

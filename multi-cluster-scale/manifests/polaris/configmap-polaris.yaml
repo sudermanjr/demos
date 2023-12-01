@@ -10,8 +10,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: polaris
     app.kubernetes.io/part-of: polaris 
-    app.kubernetes.io/version: "5.16.0"
-    helm.sh/chart: polaris-5.16.0
+    app.kubernetes.io/version: "5.17.0"
+    helm.sh/chart: polaris-5.17.0
 data:
   config.yaml: |
     checks:

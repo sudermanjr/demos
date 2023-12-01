@@ -23,16 +23,25 @@ spec:
       component: dashboard
   template:
     metadata:
+      annotations:
+        checksum/config: '85de0bcf9f8ac9c7bac371900e10b3bb46c63110ff9b12bfd18c7101ecbc15e5'
       labels:
         app: polaris
         app.kubernetes.io/name: polaris
         app.kubernetes.io/instance: polaris
         component: dashboard
+        team: security
     spec:
+      volumes:
+      - name: config
+        configMap:
+          name: polaris
       containers:
       - command:
         - polaris
         - dashboard
+        - --config
+        - /opt/app/config.yaml
         - --port
         - "8080"
         - --log-level
@@ -69,6 +78,11 @@ spec:
             privileged: false
             readOnlyRootFilesystem: true
             runAsNonRoot: true
+        volumeMounts:
+        - name: config
+          mountPath: /opt/app/config.yaml
+          subPath: config.yaml
+          readOnly: true
       serviceAccountName: polaris
       nodeSelector:
       tolerations:
