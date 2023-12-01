@@ -1,0 +1,23 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: policy
+  namespace: argocd
+spec:
+  destination:
+    namespace: policy
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: multi-cluster-scale/manifests/policy
+    repoURL: https://github.com/sudermanjr/demos.git
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+    - CreateNamespace=true
+    - PruneLast=true
+    - ServerSideApply=true
