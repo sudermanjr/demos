@@ -1,0 +1,19 @@
+# Source: polaris/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+  labels:
+    app.kubernetes.io/name: polaris
+    helm.sh/chart: polaris-5.16.0
+    app.kubernetes.io/instance: polaris
+  name: polaris
+spec:
+  rules:
+  - host: polaris.suderman.us.com
+    http:
+      paths:
+      - backend:
+          serviceName: polaris-dashboard
+          servicePort: 80
+

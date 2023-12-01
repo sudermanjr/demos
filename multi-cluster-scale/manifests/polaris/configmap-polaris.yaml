@@ -1,0 +1,223 @@
+# Source: polaris/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: polaris
+  labels:
+    app: polaris
+    app.kubernetes.io/component: dashboard
+    app.kubernetes.io/instance: polaris
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: polaris
+    app.kubernetes.io/part-of: polaris 
+    app.kubernetes.io/version: "5.16.0"
+    helm.sh/chart: polaris-5.16.0
+data:
+  config.yaml: |
+    checks:
+      cpuLimitsMissing: warning
+      cpuRequestsMissing: danger
+      dangerousCapabilities: ignore
+      deploymentMissingReplicas: warning
+      disallowKarpenterBlock: warning
+      disallowNodeTypeSelection: warning
+      hostIPCSet: ignore
+      hostNetworkSet: ignore
+      hostPIDSet: ignore
+      hostPathMount: warning
+      hostPortSet: ignore
+      imageRegistry: warning
+      insecureCapabilities: ignore
+      livenessProbeMissing: warning
+      memoryLimitsMissing: warning
+      memoryRequestsMissing: danger
+      metadataAndNameMismatched: warning
+      missingPodDisruptionBudget: warning
+      notReadOnlyRootFilesystem: ignore
+      pdbDisruptionsIsZero: warning
+      priorityClassNotSet: warning
+      privilegeEscalationAllowed: ignore
+      pullPolicyNotAlways: warning
+      readinessProbeMissing: warning
+      resourceLimits: warning
+      runAsPrivileged: ignore
+      runAsRootAllowed: ignore
+      tagNotSpecified: warning
+      tlsSettingsMissing: ignore
+    customChecks:
+      disallowKarpenterBlock:
+        category: Karpenter
+        failureMessage: |
+          Please set 'karpenter.sh/do-not-evict' annotation to false
+        schema:
+          $schema: http://json-schema.org/draft-07/schema
+          properties:
+            metadata:
+              properties:
+                annotations:
+                  properties:
+                    karpenter.sh/do-not-evict:
+                      not:
+                        const: "true"
+                  type: object
+              type: object
+          type: object
+        successMessage: |
+          PodTemplate does not have the 'karpenter.sh/do-not-evict: true' annotation
+        target: PodTemplate
+      disallowNodeTypeSelection:
+        category: Karpenter
+        failureMessage: |
+          Please remove the "node.kubernetes.io/instance-type" nodeSelector
+        schema:
+          $schema: http://json-schema.org/draft-07/schema
+          properties:
+            spec:
+              properties:
+                nodeSelector:
+                  not:
+                    anyOf:
+                    - required:
+                      - node.kubernetes.io/instance-type
+              type: object
+          type: object
+        successMessage: |
+          No "node.kubernetes.io/instance-type" nodeSelector is applied
+        target: PodTemplate
+      hostPathMount:
+        category: FWCustom
+        failureMessage: Hostpath mounts are not permitted
+        schema:
+          $schema: http://json-schema.org/draft-07/schema
+          properties:
+            volumes:
+              items:
+                not:
+                  anyOf:
+                  - required:
+                    - hostPath
+                type: object
+              type: array
+          type: object
+        successMessage: No volumes use hostPath
+        target: PodSpec
+      imageRegistry:
+        category: FWCustom
+        failureMessage: Image should not be from disallowed registry
+        schema:
+          $schema: http://json-schema.org/draft-07/schema
+          properties:
+            image:
+              anyOf:
+              - pattern: ^us-docker.pkg.dev
+                type: string
+              - pattern: ^docker.io/kindest
+                type: string
+              - pattern: ^k8s.gcr.io
+                type: string
+              - pattern: ^quay.io/fairwinds
+                type: string
+              - pattern: ^quay.io/jetstack
+                type: string
+              type: string
+          type: object
+        successMessage: Image comes from allowed registries
+        target: Container
+      resourceLimits:
+        category: FWCustom
+        containers:
+          exclude:
+          - initContainer
+        failureMessage: Resource limits should be within the required range
+        schema:
+          $schema: http://json-schema.org/draft-07/schema
+          properties:
+            resources:
+              properties:
+                limits:
+                  properties:
+                    cpu:
+                      resourceMaximum: "2"
+                      resourceMinimum: 100m
+                      type: string
+                    memory:
+                      resourceMaximum: 1Gi
+                      resourceMinimum: 100Mi
+                      type: string
+                  required:
+                  - memory
+                  - cpu
+                  type: object
+              required:
+              - limits
+              type: object
+          required:
+          - resources
+          type: object
+        successMessage: Resource limits are within the required range
+        target: Container
+    exemptions:
+      - controllerNames:
+        - cert-manager
+        rules:
+        - missingPodDisruptionBudget
+      - controllerNames:
+        - kube-apiserver
+        - kube-proxy
+        - kube-scheduler
+        - etcd-manager-events
+        - kube-controller-manager
+        - kube-dns
+        - etcd-manager-main
+        - local-path-provisioner
+        - kindnet
+        - kube-scheduler-kind-control-plane
+        - metrics-server
+        - coredns
+        rules:
+        - hostPortSet
+        - hostNetworkSet
+        - readinessProbeMissing
+        - livenessProbeMissing
+        - cpuRequestsMissing
+        - cpuLimitsMissing
+        - memoryRequestsMissing
+        - memoryLimitsMissing
+        - runAsRootAllowed
+        - runAsPrivileged
+        - notReadOnlyRootFilesystem
+        - hostPIDSet
+        - teamLabel
+        - resourceLimits
+        - pullPolicyNotAlways
+        - insecureCapabilities
+        - dangerousCapabilities
+        - privilegeEscalationAllowed
+        - deploymentMissingReplicas
+        - hostPathMount
+        - archAnnotation
+      - controllerNames:
+        - cert-manager
+        - cert-manager-ca-injector
+        - cert-manager-webhook
+        rules:
+        - notReadOnlyRootFilesystem
+        - runAsRootAllowed
+        - readinessProbeMissing
+        - livenessProbeMissing
+        - deploymentMissingReplicas
+        - cpuRequestsMissing
+        - cpuLimitsMissing
+        - memoryRequestsMissing
+        - memoryLimitsMissing
+        - insecureCapabilities
+        - teamLabel
+        - resourceLimits
+      - controllerNames:
+        - kindnet
+        rules:
+        - hostNetworkSet
+        - dangerousCapabilities
+    mutations:
+      - pullPolicyNotAlways
+
