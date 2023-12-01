@@ -12,7 +12,7 @@ for cluster in ${clusters[@]}; do
   kubectl --context $cluster -n argocd wait pods --all  --for condition=Ready
 
   ## Add repo and repo credentials
-  kubectl --context $cluster -n argocd create secret generic private-repo-creds --from-literal=type=git --from-literal=url=https://github.com/sudermanjr --from-literal=username=fargle --from-literal=password=$GITHUB_TOKEN --dry-run=client -ojson | kubectl apply -f -
+  kubectl --context $cluster -n argocd create secret generic private-repo-creds --from-literal=type=git --from-literal=url=https://github.com/sudermanjr --from-literal=username=fargle --from-literal=password=$GITHUB_TOKEN --dry-run=client -ojson | kubectl --context $cluster -n argocd apply -f -
   kubectl --context $cluster -n argocd label secret private-repo-creds argocd.argoproj.io/secret-type=repo-creds --overwrite
   kubectl --context $cluster -n argocd apply -f repository.yaml
 
