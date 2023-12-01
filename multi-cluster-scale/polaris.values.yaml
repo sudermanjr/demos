@@ -9,7 +9,7 @@ dashboard:
   podAdditionalLabels:
     team: security
   ingress:
-    enabled: false
+    enabled: true
     ingressClassName: traefik
     hosts:
       - polaris.suderman.us.com
