@@ -8,7 +8,7 @@ spec:
   destination:
     namespace: argocd
     server: https://kubernetes.default.svc
-  project: infrastructure
+  project: default
   source:
     path: multi-cluster-scale/manifests/argocd-apps
     repoURL: https://github.com/sudermanjr/demos.git
