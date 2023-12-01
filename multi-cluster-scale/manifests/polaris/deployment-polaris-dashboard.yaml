@@ -1,0 +1,88 @@
+# Source: polaris/templates/dashboard.deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: polaris-dashboard
+  labels:
+    app: polaris
+    app.kubernetes.io/component: dashboard
+    app.kubernetes.io/instance: polaris
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: polaris
+    app.kubernetes.io/part-of: polaris 
+    app.kubernetes.io/version: "5.16.0"
+    helm.sh/chart: polaris-5.16.0
+    component: dashboard
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: polaris
+      app.kubernetes.io/name: polaris
+      app.kubernetes.io/instance: polaris
+      component: dashboard
+  template:
+    metadata:
+      labels:
+        app: polaris
+        app.kubernetes.io/name: polaris
+        app.kubernetes.io/instance: polaris
+        component: dashboard
+    spec:
+      containers:
+      - command:
+        - polaris
+        - dashboard
+        - --port
+        - "8080"
+        - --log-level
+        - "Info"
+        image: 'quay.io/fairwinds/polaris:8.5'
+        imagePullPolicy: 'Always'
+        name: dashboard
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 20
+        resources:
+          limits:
+            cpu: 150m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+      serviceAccountName: polaris
+      nodeSelector:
+      tolerations:
+      topologySpreadConstraints:
+      - labelSelector:
+          matchLabels:
+            component: dashboard
+        maxSkew: 1
+        topologyKey: topology.kubernetes.io/zone
+        whenUnsatisfiable: ScheduleAnyway
+      - labelSelector:
+          matchLabels:
+            component: dashboard
+        maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+
