@@ -10,8 +10,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: polaris
     app.kubernetes.io/part-of: polaris 
-    app.kubernetes.io/version: "5.16.0"
-    helm.sh/chart: polaris-5.16.0
+    app.kubernetes.io/version: "5.17.0"
+    helm.sh/chart: polaris-5.17.0
     component: dashboard
 spec:
   replicas: 2
@@ -23,25 +23,16 @@ spec:
       component: dashboard
   template:
     metadata:
-      annotations:
-        checksum/config: '70da8a6ee35839ada4e8dbdb1ea26f7f60d1e5412aa4ec783a529eb4e1faec64'
       labels:
         app: polaris
         app.kubernetes.io/name: polaris
         app.kubernetes.io/instance: polaris
         component: dashboard
-        team: security
     spec:
-      volumes:
-      - name: config
-        configMap:
-          name: polaris
       containers:
       - command:
         - polaris
         - dashboard
-        - --config
-        - /opt/app/config.yaml
         - --port
         - "8080"
         - --log-level
@@ -78,11 +69,6 @@ spec:
             privileged: false
             readOnlyRootFilesystem: true
             runAsNonRoot: true
-        volumeMounts:
-        - name: config
-          mountPath: /opt/app/config.yaml
-          subPath: config.yaml
-          readOnly: true
       serviceAccountName: polaris
       nodeSelector:
       tolerations:
