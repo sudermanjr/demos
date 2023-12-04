@@ -1,0 +1,24 @@
+# Source: polaris/templates/webhook.pdb.yaml
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: polaris-webhook
+  labels:
+    app: polaris
+    app.kubernetes.io/component: dashboard
+    app.kubernetes.io/instance: polaris
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: polaris
+    app.kubernetes.io/part-of: polaris 
+    app.kubernetes.io/version: "5.17.0"
+    helm.sh/chart: polaris-5.17.0
+    component: webhook
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: polaris
+      app.kubernetes.io/name: polaris
+      app.kubernetes.io/instance: polaris
+      component: webhook
+

@@ -1,0 +1,27 @@
+# Source: polaris/templates/webhook.service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: polaris-webhook
+  labels:
+    app: polaris
+    app.kubernetes.io/component: dashboard
+    app.kubernetes.io/instance: polaris
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: polaris
+    app.kubernetes.io/part-of: polaris 
+    app.kubernetes.io/version: "5.17.0"
+    helm.sh/chart: polaris-5.17.0
+spec:
+  ports:
+  - name: webhook
+    port: 443
+    protocol: TCP
+    targetPort: 9876
+  selector:
+    app: polaris
+    app.kubernetes.io/name: polaris
+    app.kubernetes.io/instance: polaris
+    component: webhook
+  type: ClusterIP
+

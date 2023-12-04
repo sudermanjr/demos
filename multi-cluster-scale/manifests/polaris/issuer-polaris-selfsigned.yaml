@@ -1,0 +1,8 @@
+# Source: polaris/templates/webhook.cert.yaml
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: polaris-selfsigned
+spec:
+  selfSigned: {}
+

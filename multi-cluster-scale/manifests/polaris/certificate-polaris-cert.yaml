@@ -1,0 +1,26 @@
+# Source: polaris/templates/webhook.cert.yaml
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: polaris-cert
+  labels:
+    app: polaris
+    app.kubernetes.io/component: dashboard
+    app.kubernetes.io/instance: polaris
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: polaris
+    app.kubernetes.io/part-of: polaris 
+    app.kubernetes.io/version: "5.17.0"
+    helm.sh/chart: polaris-5.17.0
+spec:
+  commonName: polaris-webhook.polaris.svc
+  dnsNames:
+  - polaris-webhook.polaris.svc
+  - polaris-webhook.polaris
+  - polaris-webhook
+  - polaris-webhook.polaris.svc.
+  issuerRef:
+    kind: Issuer
+    name: polaris-selfsigned
+  secretName: polaris
+

@@ -1,10 +1,12 @@
 webhook:
-  enable: false
+  enable: true
   validate: true
   mutate: true
-  failurePolicy: Ignore
+  failurePolicy: Fail
   podAdditionalLabels:
     team: security
+  certManager:
+    apiVersion: "cert-manager.io/v1"
 dashboard:
   podAdditionalLabels:
     team: security

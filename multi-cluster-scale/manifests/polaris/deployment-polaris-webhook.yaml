@@ -1,0 +1,119 @@
+# Source: polaris/templates/webhook.deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: polaris-webhook
+  labels:
+    app: polaris
+    app.kubernetes.io/component: dashboard
+    app.kubernetes.io/instance: polaris
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: polaris
+    app.kubernetes.io/part-of: polaris 
+    app.kubernetes.io/version: "5.17.0"
+    helm.sh/chart: polaris-5.17.0
+    component: webhook
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: polaris
+      app.kubernetes.io/name: polaris
+      app.kubernetes.io/instance: polaris
+      component: webhook
+  template:
+    metadata:
+      annotations:
+        checksum/config: '2f529c791886c52f6cd852b3a9981a325e31240a5839dd8a3c2caffc53892d0d'
+      labels:
+        app: polaris
+        app.kubernetes.io/name: polaris
+        app.kubernetes.io/instance: polaris
+        component: webhook
+        team: security
+    spec:
+      containers:
+        - name: webhook
+          command:
+            - polaris
+            - webhook
+            - --config
+            - /opt/app/config.yaml
+            - --validate=true
+            - --mutate=true
+            - --log-level=info
+          image: 'quay.io/fairwinds/polaris:8.5'
+          imagePullPolicy: 'Always'
+          ports:
+            - containerPort: 9876
+          # These are fairly useless readiness/liveness probes for now
+          # Follow this issue for potential improvements:
+          # https://github.com/kubernetes-sigs/controller-runtime/issues/356
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - ps -ef | grep polaris
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - ps -ef | grep polaris
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: config
+              mountPath: /opt/app/config.yaml
+              subPath: config.yaml
+              readOnly: true
+            - name: secret
+              mountPath: /opt/cert/
+              readOnly: true
+            - name: cr-logs
+              mountPath: /tmp/
+              readOnly: false
+      serviceAccountName:  polaris
+      nodeSelector:
+      tolerations:
+      topologySpreadConstraints:
+      - labelSelector:
+          matchLabels:
+            component: webhook
+        maxSkew: 1
+        topologyKey: topology.kubernetes.io/zone
+        whenUnsatisfiable: ScheduleAnyway
+      - labelSelector:
+          matchLabels:
+            component: webhook
+        maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+      volumes:
+        - name: config
+          configMap:
+            name: polaris
+        - name: secret
+          secret:
+            secretName: polaris
+        - name: cr-logs
+          emptyDir: {}
+
