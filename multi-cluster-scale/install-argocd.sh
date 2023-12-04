@@ -8,7 +8,7 @@ clusters=('us-east' 'us-west' 'eu-central')
 for cluster in ${clusters[@]}; do
   ## Create the ArgoCD Namespace and install argocd
   kubectl get ns argocd --context $cluster || kubectl create ns argocd --context $cluster
-  kubectl --context $cluster apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+  kubectl --context $cluster apply -n argocd -f manifests/argocd/
   echo "waiting for argocd to become ready...."
   kubectl --context $cluster -n argocd wait pods --all  --for condition=Ready
 

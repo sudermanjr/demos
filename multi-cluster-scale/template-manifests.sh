@@ -9,3 +9,6 @@ helm template polaris -n polaris fairwinds-stable/polaris --values polaris.value
 curl -LO https://github.com/kyverno/kyverno/releases/download/v1.10.0/install.yaml
 kubectl slice -f install.yaml -o ./manifests/kyverno/
 rm install.yaml
+
+kubectl apply -k "https://github.com/argoproj/argo-cd/manifests/crds?ref=v2.4.9" --dry-run=client -oyaml | kubectl slice -f - -o manifests/argocd/
+helm template argocd -n argocd argo/argo-cd --values argocd.values.yaml | kubectl slice -f - -o manifests/argocd/
