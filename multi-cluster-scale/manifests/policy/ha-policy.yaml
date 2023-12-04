@@ -20,4 +20,3 @@ metadata:
 spec:
   policyName: "ha-policy.fairwinds.com"
   validationActions: [Deny]
-  matchResources:
