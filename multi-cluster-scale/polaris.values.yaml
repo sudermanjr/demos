@@ -2,7 +2,7 @@ webhook:
   enable: true
   validate: true
   mutate: true
-  failurePolicy: Fail
+  failurePolicy: Ignore
   podAdditionalLabels:
     team: security
   certManager:

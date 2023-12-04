@@ -15,7 +15,7 @@ webhooks:
       namespace: polaris
       path: /validate
       port: 443
-  failurePolicy: Fail
+  failurePolicy: Ignore
   matchPolicy: Exact
   name: polaris.fairwinds.com
   namespaceSelector:
