@@ -16,7 +16,7 @@ data:
   config.yaml: |
     checks:
       cpuLimitsMissing: warning
-      cpuRequestsMissing: danger
+      cpuRequestsMissing: warning
       dangerousCapabilities: ignore
       deploymentMissingReplicas: warning
       disallowKarpenterBlock: warning
@@ -30,7 +30,7 @@ data:
       insecureCapabilities: ignore
       livenessProbeMissing: warning
       memoryLimitsMissing: warning
-      memoryRequestsMissing: danger
+      memoryRequestsMissing: warning
       metadataAndInstanceMismatched: warning
       missingPodDisruptionBudget: warning
       notReadOnlyRootFilesystem: ignore

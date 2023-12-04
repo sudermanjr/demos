@@ -29,9 +29,9 @@ config:
     missingPodDisruptionBudget: warning
 
     # efficiency
-    cpuRequestsMissing: danger
+    cpuRequestsMissing: warning
     cpuLimitsMissing: warning
-    memoryRequestsMissing: danger
+    memoryRequestsMissing: warning
     memoryLimitsMissing: warning
 
     # security
