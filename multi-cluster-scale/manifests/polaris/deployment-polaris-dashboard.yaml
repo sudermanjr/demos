@@ -10,8 +10,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: polaris
     app.kubernetes.io/part-of: polaris 
-    app.kubernetes.io/version: "5.17.0"
-    helm.sh/chart: polaris-5.17.0
+    app.kubernetes.io/version: "5.16.0"
+    helm.sh/chart: polaris-5.16.0
     component: dashboard
 spec:
   replicas: 2
@@ -24,7 +24,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: '85de0bcf9f8ac9c7bac371900e10b3bb46c63110ff9b12bfd18c7101ecbc15e5'
+        checksum/config: '28de64ba780e319ca2f1dc9f1700b2be79b1904d67a19a495c5a70ad99535784'
       labels:
         app: polaris
         app.kubernetes.io/name: polaris
