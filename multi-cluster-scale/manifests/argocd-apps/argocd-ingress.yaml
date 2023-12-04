@@ -12,6 +12,10 @@ spec:
           service:
             name: argocd-server
             port:
-              number: 8080
+              number: 80
         path: /
         pathType: Prefix
+  tls:
+  - hosts:
+      - argocd.suderman.us.com
+    secretName: argocd-secret
