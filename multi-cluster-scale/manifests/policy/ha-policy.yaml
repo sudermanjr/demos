@@ -3,7 +3,7 @@ kind: ValidatingAdmissionPolicy
 metadata:
   name: "ha-policy.fairwinds.com"
 spec:
-  failurePolicy: Fail
+  failurePolicy: Warn
   matchConstraints:
     resourceRules:
     - apiGroups:   ["apps"]
