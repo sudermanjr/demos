@@ -40,7 +40,7 @@ spec:
             - --config
             - /opt/app/config.yaml
             - --validate=true
-            - --mutate=true
+            - --mutate=false
             - --log-level=info
           image: 'quay.io/fairwinds/polaris:8.5'
           imagePullPolicy: 'Always'

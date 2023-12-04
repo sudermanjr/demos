@@ -1,7 +1,7 @@
 webhook:
   enable: true
   validate: true
-  mutate: true
+  mutate: false
   failurePolicy: Ignore
   podAdditionalLabels:
     team: security
