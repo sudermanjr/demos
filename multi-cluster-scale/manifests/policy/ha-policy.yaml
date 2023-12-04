@@ -10,6 +10,10 @@ spec:
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
       resources:   ["deployments"]
+      scope: '*'
+    matchPolicy: Equivalent
+    namespaceSelector: {}
+    objectSelector: {}
   validations:
     - expression: "object.spec.replicas >= 3"
 ---
