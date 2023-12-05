@@ -15,10 +15,10 @@ metadata:
 data:
   config.yaml: |
     checks:
-      cpuLimitsMissing: warning
+      cpuLimitsMissing: ignore
       cpuRequestsMissing: warning
       dangerousCapabilities: ignore
-      deploymentMissingReplicas: warning
+      deploymentMissingReplicas: ignore
       hostIPCSet: ignore
       hostNetworkSet: ignore
       hostPIDSet: ignore
@@ -27,13 +27,13 @@ data:
       imageRegistry: warning
       insecureCapabilities: ignore
       livenessProbeMissing: warning
-      memoryLimitsMissing: warning
+      memoryLimitsMissing: ignore
       memoryRequestsMissing: warning
       metadataAndInstanceMismatched: warning
       missingPodDisruptionBudget: warning
       notReadOnlyRootFilesystem: ignore
       pdbDisruptionsIsZero: warning
-      priorityClassNotSet: warning
+      priorityClassNotSet: ignore
       privilegeEscalationAllowed: ignore
       pullPolicyNotAlways: warning
       readinessProbeMissing: warning

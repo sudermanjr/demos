@@ -8,6 +8,8 @@ kyvernoPlugin:
 
 ui:
   enabled: true
+  podLabels:
+    team: security
   plugins:
     kyverno: true
   ingress:
@@ -18,4 +20,4 @@ ui:
         paths:
           - path: /
             pathType: Prefix
-  
+

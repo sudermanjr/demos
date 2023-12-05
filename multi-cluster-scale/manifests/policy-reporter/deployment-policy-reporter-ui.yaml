@@ -27,6 +27,7 @@ spec:
         helm.sh/chart: ui-2.10.2
         app.kubernetes.io/version: "1.9.1"
         app.kubernetes.io/part-of: policy-reporter
+        team: security
       annotations:
         checksum/config: "7925e80cd7c8756c851b8b24d2120df3cc1bf8bfd9ca8eece34f76ec3346b2a7"
     spec:
