@@ -19,8 +19,6 @@ data:
       cpuRequestsMissing: warning
       dangerousCapabilities: ignore
       deploymentMissingReplicas: warning
-      disallowKarpenterBlock: warning
-      disallowNodeTypeSelection: warning
       hostIPCSet: ignore
       hostNetworkSet: ignore
       hostPIDSet: ignore
@@ -45,45 +43,6 @@ data:
       tagNotSpecified: warning
       tlsSettingsMissing: ignore
     customChecks:
-      disallowKarpenterBlock:
-        category: Karpenter
-        failureMessage: |
-          Please set 'karpenter.sh/do-not-evict' annotation to false
-        schema:
-          $schema: http://json-schema.org/draft-07/schema
-          properties:
-            metadata:
-              properties:
-                annotations:
-                  properties:
-                    karpenter.sh/do-not-evict:
-                      not:
-                        const: "true"
-                  type: object
-              type: object
-          type: object
-        successMessage: |
-          PodTemplate does not have the 'karpenter.sh/do-not-evict: true' annotation
-        target: PodTemplate
-      disallowNodeTypeSelection:
-        category: Karpenter
-        failureMessage: |
-          Please remove the "node.kubernetes.io/instance-type" nodeSelector
-        schema:
-          $schema: http://json-schema.org/draft-07/schema
-          properties:
-            spec:
-              properties:
-                nodeSelector:
-                  not:
-                    anyOf:
-                    - required:
-                      - node.kubernetes.io/instance-type
-              type: object
-          type: object
-        successMessage: |
-          No "node.kubernetes.io/instance-type" nodeSelector is applied
-        target: PodTemplate
       hostPathMount:
         category: FWCustom
         failureMessage: Hostpath mounts are not permitted

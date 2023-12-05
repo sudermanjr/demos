@@ -52,10 +52,6 @@ config:
     resourceLimits: warning
     hostPathMount: warning
 
-    # Karpenter
-    disallowKarpenterBlock: warning
-    disallowNodeTypeSelection: warning
-
   customChecks:
     imageRegistry:
       successMessage: Image comes from allowed registries
@@ -79,46 +75,6 @@ config:
                 type: string
               - pattern: ^quay.io/jetstack
                 type: string
-
-    disallowKarpenterBlock:
-      successMessage: |
-        PodTemplate does not have the 'karpenter.sh/do-not-evict: true' annotation
-      failureMessage: |
-        Please set 'karpenter.sh/do-not-evict' annotation to false
-      category: Karpenter
-      target: PodTemplate
-      schema:
-        '$schema': http://json-schema.org/draft-07/schema
-        type: object
-        properties:
-          metadata:
-            type: object
-            properties:
-              annotations:
-                type: object
-                properties:
-                  'karpenter.sh/do-not-evict':
-                    not:
-                      const: "true"
-
-    disallowNodeTypeSelection:
-      successMessage: |
-        No "node.kubernetes.io/instance-type" nodeSelector is applied
-      failureMessage: |
-        Please remove the "node.kubernetes.io/instance-type" nodeSelector
-      category: Karpenter
-      target: PodTemplate
-      schema:
-        '$schema': http://json-schema.org/draft-07/schema
-        type: object
-        properties:
-          spec:
-            type: object
-            properties:
-              nodeSelector:
-                not:
-                  anyOf:
-                    - required: ["node.kubernetes.io/instance-type"]
 
     resourceLimits:
       containers:
