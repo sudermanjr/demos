@@ -4,9 +4,6 @@ metadata:
   name: "ha-policy.fairwinds.com"
 spec:
   failurePolicy: Fail
-  paramKind:
-    apiVersion: "rules.fairwinds.com/v1"
-    kind: ReplicaLimit
   matchConstraints:
     resourceRules:
     - apiGroups:   ["apps"]
@@ -18,6 +15,4 @@ spec:
     namespaceSelector: {}
     objectSelector: {}
   validations:
-    - expression: "object.spec.replicas <= params.maxReplicas"
-      reason: Invalid
-
+    - expression: "object.spec.replicas >= 3"
