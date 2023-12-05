@@ -2,6 +2,15 @@ apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
   name: require-labels
+  annotations:
+    policies.kyverno.io/title: Require Team Label
+    policies.kyverno.io/minversion: 1.6.0
+    policies.kyverno.io/category: basic-best-practices
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/description: >-
+      All pods should have a label for the team that owns them
+      in the format `team: <infrastructure|security|appdev>`
 spec:
   validationFailureAction: Audit
   rules:
