@@ -12,6 +12,7 @@ metadata:
     app.kubernetes.io/version: "v1.13.2"
     app.kubernetes.io/managed-by: Helm
     helm.sh/chart: cert-manager-v1.13.2
+    team: infrastructure
 rules:
   - apiGroups: ["coordination.k8s.io"]
     resources: ["leases"]

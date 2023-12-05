@@ -28,6 +28,7 @@ spec:
         helm.sh/chart: kyverno-plugin-1.6.2
         app.kubernetes.io/version: "1.6.1"
         app.kubernetes.io/part-of: policy-reporter
+        team: security
       annotations:
         checksum/secret: "b1e5bc53664486cd8570bc9a42d732eb75c45f38cce71398ba3dfe10c3c44849"
     spec:

@@ -12,6 +12,7 @@ metadata:
     app.kubernetes.io/version: "v1.13.2"
     app.kubernetes.io/managed-by: Helm
     helm.sh/chart: cert-manager-v1.13.2
+    team: infrastructure
 spec:
   replicas: 1
   selector:
@@ -29,6 +30,7 @@ spec:
         app.kubernetes.io/version: "v1.13.2"
         app.kubernetes.io/managed-by: Helm
         helm.sh/chart: cert-manager-v1.13.2
+        team: infrastructure
       annotations:
         prometheus.io/path: "/metrics"
         prometheus.io/scrape: 'true'

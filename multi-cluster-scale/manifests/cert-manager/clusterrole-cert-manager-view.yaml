@@ -11,6 +11,7 @@ metadata:
     app.kubernetes.io/version: "v1.13.2"
     app.kubernetes.io/managed-by: Helm
     helm.sh/chart: cert-manager-v1.13.2
+    team: infrastructure
     rbac.authorization.k8s.io/aggregate-to-view: "true"
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
     rbac.authorization.k8s.io/aggregate-to-admin: "true"

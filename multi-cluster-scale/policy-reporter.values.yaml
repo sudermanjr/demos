@@ -3,6 +3,8 @@ podLabels:
 
 kyvernoPlugin:
   enabled: true
+  podLabels:
+    team: security
 
 ui:
   enabled: true

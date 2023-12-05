@@ -1,0 +1,4 @@
+global:
+  commonLabels:
+    team: infrastructure
+installCRDs: true
