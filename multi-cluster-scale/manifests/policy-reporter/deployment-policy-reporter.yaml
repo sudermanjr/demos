@@ -27,6 +27,7 @@ spec:
         helm.sh/chart: policy-reporter-2.21.3
         app.kubernetes.io/version: "2.17.4"
         app.kubernetes.io/part-of: policy-reporter
+        team: security
       annotations:
         checksum/secret: "c01dcf1787e6413a78246213ba0a8452137bef351eb4b5264070ce3e53069717"
     spec:

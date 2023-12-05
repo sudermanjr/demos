@@ -14,4 +14,4 @@ rm install.yaml
 helm template argocd -n argocd argo/argo-cd --values argocd.values.yaml | kubectl slice -f - -o manifests/argocd/
 
 mkdir -p manifests/policy-reporter
-helm template policy-reporter policy-reporter/policy-reporter --set kyvernoPlugin.enabled=true --set ui.enabled=true --set ui.plugins.kyverno=true -n policy-reporter | kubectl slice -f - -o manifests/policy-reporter/
+helm template policy-reporter policy-reporter/policy-reporter -n policy-reporter --values policy-reporter.values.yaml | kubectl slice -f - -o manifests/policy-reporter/
