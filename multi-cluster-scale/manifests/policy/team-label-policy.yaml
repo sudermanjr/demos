@@ -11,11 +11,11 @@ spec:
       - resources:
           kinds:
           - Pod
-      exclude:
-        any:
-        - resources:
-            namespaces:
-            - kube-system
+    exclude:
+      any:
+      - resources:
+          namespaces:
+          - kube-system
     validate:
       message: "label 'team' is required"
       pattern:
