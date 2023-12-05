@@ -11,6 +11,8 @@ spec:
   project: default
   source:
     path: multi-cluster-scale/manifests/policy
+    directory:
+      recurse: true
     repoURL: https://github.com/sudermanjr/demos.git
   syncPolicy:
     automated:
