@@ -21,7 +21,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: policy-reporter
+                name: policy-reporter-ui
                 port:
                   number: 8080
 
