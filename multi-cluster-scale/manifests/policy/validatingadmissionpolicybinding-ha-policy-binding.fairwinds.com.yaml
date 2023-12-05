@@ -1,0 +1,11 @@
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: "ha-policy-binding.fairwinds.com"
+spec:
+  paramRef:
+    name: "replica-limit.fairwinds.com"
+    namespace: "policy"
+  policyName: "ha-policy.fairwinds.com"
+  validationActions: [Warn, Audit]
+

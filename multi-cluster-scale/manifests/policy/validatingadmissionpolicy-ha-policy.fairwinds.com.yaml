@@ -4,6 +4,9 @@ metadata:
   name: "ha-policy.fairwinds.com"
 spec:
   failurePolicy: Fail
+  paramKind:
+    apiVersion: "rules.fairwinds.com/v1"
+    kind: ReplicaLimit
   matchConstraints:
     resourceRules:
     - apiGroups:   ["apps"]
@@ -15,12 +18,6 @@ spec:
     namespaceSelector: {}
     objectSelector: {}
   validations:
-    - expression: "object.spec.replicas >= 3"
----
-apiVersion: admissionregistration.k8s.io/v1beta1
-kind: ValidatingAdmissionPolicyBinding
-metadata:
-  name: "ha-policy-binding.fairwinds.com"
-spec:
-  policyName: "ha-policy.fairwinds.com"
-   validationActions: [Warn, Audit]
+    - expression: "object.spec.replicas <= params.maxReplicas"
+      reason: Invalid
+

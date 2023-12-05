@@ -1,0 +1,6 @@
+apiVersion: rules.fairwinds.com/v1
+kind: ReplicaLimit
+metadata:
+  name: "replica-limit.fairwinds.com"
+maxReplicas: 3
+
