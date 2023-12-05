@@ -8,3 +8,10 @@ ui:
   enabled: true
   plugins:
     kyverno: true
+ingress:
+  enabled: true
+  ingressClassName: traefik
+  hosts:
+    - host: policies.suderman.us.com
+      path: /
+
