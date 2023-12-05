@@ -13,5 +13,7 @@ ingress:
   ingressClassName: traefik
   hosts:
     - host: policies.suderman.us.com
-      path: /
+      paths:
+        - path: /
+          pathType: Prefix
 

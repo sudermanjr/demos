@@ -17,4 +17,11 @@ spec:
     - host: "policies.suderman.us.com"
       http:
         paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: policy-reporter
+                port:
+                  number: 8080
 
