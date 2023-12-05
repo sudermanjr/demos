@@ -21,6 +21,8 @@ spec:
     spec:
       template:
         metadata:
+          labels:
+            team: security
         spec:
           serviceAccountName: kyverno-cleanup-jobs
           containers:
