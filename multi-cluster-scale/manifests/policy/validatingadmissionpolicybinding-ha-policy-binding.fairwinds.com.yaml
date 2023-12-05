@@ -6,6 +6,7 @@ spec:
   paramRef:
     name: "replica-limit.fairwinds.com"
     namespace: "policy"
+    parameterNotFoundAction: Deny
   policyName: "ha-policy.fairwinds.com"
   validationActions: [Warn, Audit]
 
