@@ -1,0 +1,20 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: add-ns-security-labels
+spec:
+  rules:
+  - name: add-labels
+    match:
+      any:
+      - resources:
+          kinds:
+          - Namespaces
+    mutate:
+      patchStrategicMerge:
+        metadata:
+          labels:
+            +(pod-security.kubernetes.io/enforce): baseline
+            +(pod-security.kubernetes.io/audit): restricted
+            +(pod-security.kubernetes.io/warn): restricted
+
