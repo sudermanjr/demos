@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/bin/bash
 
 curl -LO https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.crds.yaml
 mv cert-manager.crds.yaml ./manifests/cert-manager/
