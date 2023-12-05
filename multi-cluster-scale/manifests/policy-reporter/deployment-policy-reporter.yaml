@@ -1,0 +1,93 @@
+# Source: policy-reporter/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: policy-reporter
+  namespace: policy-reporter
+  labels:
+    helm.sh/chart: policy-reporter-2.21.3
+    app.kubernetes.io/name: policy-reporter
+    app.kubernetes.io/instance: policy-reporter
+    app.kubernetes.io/version: "2.17.4"
+    app.kubernetes.io/component: reporting
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: policy-reporter
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: policy-reporter
+      app.kubernetes.io/instance: policy-reporter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: policy-reporter
+        app.kubernetes.io/instance: policy-reporter
+        helm.sh/chart: policy-reporter-2.21.3
+        app.kubernetes.io/version: "2.17.4"
+        app.kubernetes.io/part-of: policy-reporter
+      annotations:
+        checksum/secret: "c01dcf1787e6413a78246213ba0a8452137bef351eb4b5264070ce3e53069717"
+    spec:
+      serviceAccountName: policy-reporter
+      automountServiceAccountToken: true
+      securityContext:
+        fsGroup: 1234
+      containers:
+        - name: policy-reporter
+          image: "ghcr.io/kyverno/policy-reporter:2.17.4"
+          imagePullPolicy: IfNotPresent
+          securityContext: 
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1234
+            seccompProfile:
+              type: RuntimeDefault
+          args:
+            - --port=8080
+            - --config=/app/config.yaml
+            - --dbfile=/sqlite/database.db
+            - --metrics-enabled=false
+            - --rest-enabled=true
+            - --profile=false
+            - --lease-name=policy-reporter
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          resources:
+            {}
+          volumeMounts:
+          - name: sqlite
+            mountPath: /sqlite
+          - name: config-file
+            mountPath: /app/config.yaml
+            subPath: config.yaml
+            readOnly: true
+          env:
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+      volumes:
+      - name: sqlite
+        emptyDir: {}
+      - name: config-file
+        secret:
+          secretName: policy-reporter-config
+          optional: true
+

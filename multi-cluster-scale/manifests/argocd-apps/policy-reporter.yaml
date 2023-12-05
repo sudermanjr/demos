@@ -3,10 +3,10 @@ apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    kubernetes.io/metadata.name: kyverno
+    kubernetes.io/metadata.name: policy-reporter
     pod-security.kubernetes.io/enforce: baseline
     pod-security.kubernetes.io/warn: restricted
-  name: kyverno
+  name: policy-reporter
 spec:
   finalizers:
   - kubernetes
@@ -14,15 +14,15 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kyverno
+  name: policy-reporter
   namespace: argocd
 spec:
   destination:
-    namespace: kyverno
+    namespace: policy-reporter
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: multi-cluster-scale/manifests/kyverno
+    path: multi-cluster-scale/manifests/policy-reporter
     repoURL: https://github.com/sudermanjr/demos.git
   syncPolicy:
     automated:

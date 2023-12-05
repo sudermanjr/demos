@@ -1,0 +1,25 @@
+# Source: policy-reporter/charts/ui/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: policy-reporter-ui
+  namespace: policy-reporter
+  labels:
+    helm.sh/chart: ui-2.10.2
+    app.kubernetes.io/name: ui
+    app.kubernetes.io/instance: policy-reporter
+    app.kubernetes.io/version: "1.9.1"
+    app.kubernetes.io/component: ui
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: policy-reporter
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: ui
+    app.kubernetes.io/instance: policy-reporter
+

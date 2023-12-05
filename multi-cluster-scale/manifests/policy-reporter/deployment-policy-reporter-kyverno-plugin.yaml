@@ -1,0 +1,89 @@
+# Source: policy-reporter/charts/kyvernoPlugin/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: policy-reporter-kyverno-plugin
+  namespace: policy-reporter
+  annotations:
+  labels:
+    helm.sh/chart: kyverno-plugin-1.6.2
+    app.kubernetes.io/name: kyverno-plugin
+    app.kubernetes.io/instance: policy-reporter
+    app.kubernetes.io/version: "1.6.1"
+    app.kubernetes.io/component: plugin
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: policy-reporter
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kyverno-plugin
+      app.kubernetes.io/instance: policy-reporter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kyverno-plugin
+        app.kubernetes.io/instance: policy-reporter
+        helm.sh/chart: kyverno-plugin-1.6.2
+        app.kubernetes.io/version: "1.6.1"
+        app.kubernetes.io/part-of: policy-reporter
+      annotations:
+        checksum/secret: "b1e5bc53664486cd8570bc9a42d732eb75c45f38cce71398ba3dfe10c3c44849"
+    spec:
+      securityContext:
+        runAsGroup: 1234
+        runAsUser: 1234
+      serviceAccountName: policy-reporter-kyverno-plugin
+      automountServiceAccountToken: true
+      containers:
+        - name: "kyverno-plugin"
+          image: "ghcr.io/kyverno/policy-reporter-kyverno-plugin:1.6.1"
+          imagePullPolicy: IfNotPresent
+          securityContext: 
+            
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1234
+            seccompProfile:
+              type: RuntimeDefault
+          args:
+            - --port=8080
+            - --metrics-enabled=true
+            - --rest-enabled=true
+            - --lease-name=policy-reporter-kyverno-plugin
+          ports:
+            - name: rest
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: rest
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: rest
+          resources:
+            {}
+          volumeMounts:
+          - name: config-file
+            mountPath: /app/config.yaml
+            subPath: config.yaml
+            readOnly: true
+          env:
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+      volumes:
+      - name: config-file
+        secret:
+          secretName: policy-reporter-kyverno-plugin-config
+          optional: true
+

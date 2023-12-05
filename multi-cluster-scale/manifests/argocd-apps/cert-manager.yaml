@@ -1,4 +1,16 @@
 ---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    kubernetes.io/metadata.name: cert-manager
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/warn: restricted
+  name: cert-manager
+spec:
+  finalizers:
+  - kubernetes
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:

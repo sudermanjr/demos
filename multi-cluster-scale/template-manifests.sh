@@ -12,3 +12,6 @@ rm install.yaml
 
 #kubectl apply -k "https://github.com/argoproj/argo-cd/manifests/crds?ref=v2.4.9" --dry-run=client -oyaml | kubectl slice -f - -o manifests/argocd/
 helm template argocd -n argocd argo/argo-cd --values argocd.values.yaml | kubectl slice -f - -o manifests/argocd/
+
+mkdir -p manifests/policy-reporter
+helm template policy-reporter policy-reporter/policy-reporter --set kyvernoPlugin.enabled=true --set ui.enabled=true --set ui.plugins.kyverno=true -n policy-reporter | kubectl slice -f - -o manifests/policy-reporter/

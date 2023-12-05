@@ -1,0 +1,50 @@
+# Source: policy-reporter/charts/ui/templates/config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: policy-reporter-ui-config
+  namespace: policy-reporter
+  labels:
+    helm.sh/chart: ui-2.10.2
+    app.kubernetes.io/name: ui
+    app.kubernetes.io/instance: policy-reporter
+    app.kubernetes.io/version: "1.9.1"
+    app.kubernetes.io/component: ui
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: policy-reporter
+data:
+  config.yaml: |-
+    logSize: 200
+    displayMode: ""
+    refreshInterval: 10000
+    clusterName: ""
+    views:
+      dashboard:
+        policyReports: true
+        clusterPolicyReports: true
+      logs: true
+      policyReports: true
+      clusterPolicyReports: true
+      kyvernoPolicies: true
+      kyvernoVerifyImages: true
+    redis:
+      address: ""
+      database: 0
+      enabled: false
+      password: ""
+      prefix: policy-reporter-ui
+      username: ""
+
+    logging:
+      encoding: console
+      logLevel: 0
+      development: false
+
+    apiConfig:
+      logging: false
+      overwriteHost: true
+      basicAuth:
+        username: 
+        password: 
+        secretRef:
+
