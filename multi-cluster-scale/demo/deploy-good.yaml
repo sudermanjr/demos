@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-good
+  namespace: demo
+  labels:
+    app: demo-good
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo-good
+  template:
+    metadata:
+      labels:
+        app: demo-good
+        team: appdev
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: demo
+        image: quay.io/sudermanjr/utilities:latest
+        # Just spin & wait forever
+        command: [ "/bin/bash", "-c", "--" ]
+        args: [ "while true; do sleep 30; done;" ]
+        securityContext:
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          runAsUser: 10324
+          capabilities:
+            drop:
+              - ALL
+        resources:
+          requests:
+            cpu: 30m
+            memory: 64Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
+
