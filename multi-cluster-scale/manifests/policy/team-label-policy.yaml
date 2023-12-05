@@ -1,19 +1,17 @@
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
-  name: require-labels
+  name: add-labels
 spec:
-  validationFailureAction: Audit
   rules:
-  - name: check-team
+  - name: add-team
     match:
       any:
       - resources:
           kinds:
           - Pod
-    validate:
-      message: "label 'team' is required"
-      pattern:
+    mutate:
+      patchStrategicMerge:
         metadata:
           labels:
-            team: "?*"
+            +(team): infrastructure
