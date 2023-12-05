@@ -1,3 +1,4 @@
+# Source: kyverno/templates/cleanup-controller/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -5,8 +6,11 @@ metadata:
   labels:
     app.kubernetes.io/component: cleanup-controller
     app.kubernetes.io/instance: kyverno
+    app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: kyverno
-    app.kubernetes.io/version: v1.10.0
+    app.kubernetes.io/version: 3.1.1
+    helm.sh/chart: kyverno-3.1.1
+    team: security
   namespace: kyverno
 rules:
   - apiGroups:
@@ -14,11 +18,20 @@ rules:
     resources:
       - secrets
     verbs:
+      - create
+  - apiGroups:
+      - ''
+    resources:
+      - secrets
+    verbs:
+      - delete
       - get
       - list
-      - watch
-      - create
       - update
+      - watch
+    resourceNames:
+      - kyverno-cleanup-controller.kyverno.svc.kyverno-tls-ca
+      - kyverno-cleanup-controller.kyverno.svc.kyverno-tls-pair
   - apiGroups:
       - ''
     resources:
@@ -36,8 +49,15 @@ rules:
       - leases
     verbs:
       - create
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
       - delete
       - get
       - patch
       - update
+    resourceNames:
+      - kyverno-cleanup-controller
 

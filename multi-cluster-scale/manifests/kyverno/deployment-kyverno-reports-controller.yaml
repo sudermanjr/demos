@@ -1,3 +1,4 @@
+# Source: kyverno/templates/reports-controller/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6,8 +7,11 @@ metadata:
   labels:
     app.kubernetes.io/component: reports-controller
     app.kubernetes.io/instance: kyverno
+    app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: kyverno
-    app.kubernetes.io/version: v1.10.0
+    app.kubernetes.io/version: 3.1.1
+    helm.sh/chart: kyverno-3.1.1
+    team: security
 spec:
   replicas: 
   strategy:
@@ -25,8 +29,11 @@ spec:
       labels:
         app.kubernetes.io/component: reports-controller
         app.kubernetes.io/instance: kyverno
+        app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/part-of: kyverno
-        app.kubernetes.io/version: v1.10.0
+        app.kubernetes.io/version: 3.1.1
+        helm.sh/chart: kyverno-3.1.1
+        team: security
     spec:
       dnsPolicy: ClusterFirst
       affinity:
@@ -44,7 +51,8 @@ spec:
       serviceAccountName: kyverno-reports-controller
       containers:
         - name: controller
-          image: "ghcr.io/kyverno/reports-controller:v1.10.0"
+          image: "ghcr.io/kyverno/reports-controller:v1.11.1"
+          imagePullPolicy: IfNotPresent
           ports:
           - containerPort: 9443
             name: https
@@ -57,18 +65,28 @@ spec:
             - --otelConfig=prometheus
             - --metricsPort=8000
             - --admissionReports=true
+            - --aggregateReports=true
+            - --policyReports=true
+            - --validatingAdmissionPolicyReports=false
             - --backgroundScan=true
             - --backgroundScanWorkers=2
             - --backgroundScanInterval=1h
             - --skipResourceFilters=true
             - --enableConfigMapCaching=true
+            - --enableDeferredLoading=true
             - --loggingFormat=text
             - --v=2
-            - --enablePolicyException=false
+            - --enablePolicyException=true
             - --reportsChunkSize=1000
             - --allowInsecureRegistry=false
             - --registryCredentialHelpers=default,google,amazon,azure,github
           env:
+          - name: KYVERNO_SERVICEACCOUNT_NAME
+            value: kyverno-reports-controller
+          - name: KYVERNO_DEPLOYMENT
+            value: kyverno-reports-controller
+          - name: INIT_CONFIG
+            value: kyverno
           - name: METRICS_CONFIG
             value: kyverno-metrics
           - name: KYVERNO_POD_NAME
@@ -81,7 +99,7 @@ spec:
                 fieldPath: metadata.namespace
           - name: TUF_ROOT
             value: /.sigstore
-          resources: 
+          resources:
             limits:
               memory: 128Mi
             requests:

@@ -1,3 +1,4 @@
+# Source: kyverno/templates/reports-controller/clusterrolebinding.yaml
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -5,8 +6,11 @@ metadata:
   labels:
     app.kubernetes.io/component: reports-controller
     app.kubernetes.io/instance: kyverno
+    app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: kyverno
-    app.kubernetes.io/version: v1.10.0
+    app.kubernetes.io/version: 3.1.1
+    helm.sh/chart: kyverno-3.1.1
+    team: security
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

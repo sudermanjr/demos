@@ -6,10 +6,7 @@ helm template cert-manager -n cert-manager jetstack/cert-manager --version 1.13.
 
 helm template polaris -n polaris fairwinds-stable/polaris --values polaris.values.yaml | kubectl slice -f - -o ./manifests/polaris/
 
-curl -LO https://github.com/kyverno/kyverno/releases/download/v1.10.0/install.yaml
-kubectl slice -f install.yaml -o ./manifests/kyverno/
-rm install.yaml
-rm manifests/kyverno/namespace-kyverno.yaml
+helm template kyverno -n kyverno kyverno/kyverno --values kyverno.values.yaml | kubectl slice -f - -o manifests/kyverno
 
 helm template argocd -n argocd argo/argo-cd --values argocd.values.yaml | kubectl slice -f - -o manifests/argocd/
 

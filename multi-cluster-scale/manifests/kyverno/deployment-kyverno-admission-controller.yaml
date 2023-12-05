@@ -1,3 +1,4 @@
+# Source: kyverno/templates/admission-controller/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6,8 +7,11 @@ metadata:
   labels:
     app.kubernetes.io/component: admission-controller
     app.kubernetes.io/instance: kyverno
+    app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: kyverno
-    app.kubernetes.io/version: v1.10.0
+    app.kubernetes.io/version: 3.1.1
+    helm.sh/chart: kyverno-3.1.1
+    team: security
 spec:
   replicas: 
   strategy:
@@ -25,14 +29,29 @@ spec:
       labels:
         app.kubernetes.io/component: admission-controller
         app.kubernetes.io/instance: kyverno
+        app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/part-of: kyverno
-        app.kubernetes.io/version: v1.10.0
+        app.kubernetes.io/version: 3.1.1
+        helm.sh/chart: kyverno-3.1.1
+        team: security
     spec:
       dnsPolicy: ClusterFirst
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/component
+                  operator: In
+                  values:
+                  - admission-controller
+              topologyKey: kubernetes.io/hostname
+            weight: 1
       serviceAccountName: kyverno-admission-controller
       initContainers:
         - name: kyverno-pre
-          image: "ghcr.io/kyverno/kyvernopre:v1.10.0"
+          image: "ghcr.io/kyverno/kyvernopre:v1.11.1"
           imagePullPolicy: IfNotPresent
           args:
             - --loggingFormat=text
@@ -55,6 +74,10 @@ spec:
             seccompProfile:
               type: RuntimeDefault
           env:
+          - name: KYVERNO_SERVICEACCOUNT_NAME
+            value: kyverno-admission-controller
+          - name: INIT_CONFIG
+            value: kyverno
           - name: METRICS_CONFIG
             value: kyverno-metrics
           - name: KYVERNO_NAMESPACE
@@ -66,12 +89,16 @@ spec:
               fieldRef:
                 fieldPath: metadata.name
           - name: KYVERNO_DEPLOYMENT
-            value: kyverno
+            value: kyverno-admission-controller
+          - name: KYVERNO_SVC
+            value: kyverno-svc
       containers:
         - name: kyverno
-          image: "ghcr.io/kyverno/kyverno:v1.10.0"
+          image: "ghcr.io/kyverno/kyverno:v1.11.1"
           imagePullPolicy: IfNotPresent
           args:
+            - --caSecretName=kyverno-svc.kyverno.svc.kyverno-tls-ca
+            - --tlsSecretName=kyverno-svc.kyverno.svc.kyverno-tls-pair
             - --backgroundServiceAccountName=system:serviceaccount:kyverno:kyverno-background-controller
             - --servicePort=443
             - --disableMetrics=false
@@ -80,15 +107,17 @@ spec:
             - --admissionReports=true
             - --autoUpdateWebhooks=true
             - --enableConfigMapCaching=true
+            - --enableDeferredLoading=true
             - --dumpPayload=false
             - --forceFailurePolicyIgnore=false
+            - --generateValidatingAdmissionPolicy=false
             - --loggingFormat=text
             - --v=2
-            - --enablePolicyException=false
+            - --enablePolicyException=true
             - --protectManagedResources=false
             - --allowInsecureRegistry=false
             - --registryCredentialHelpers=default,google,amazon,azure,github
-          resources: 
+          resources:
             limits:
               memory: 384Mi
             requests:
