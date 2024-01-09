@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yelb-appserver
+spec:
+  selector:
+    matchLabels:
+      app: yelb-appserver
+  template:
+    metadata:
+      labels:
+        app: yelb-appserver
+        tier: middletier
+        app.kubernetes.io/name: "yelb"
+    spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+      containers:
+      - name: yelb-appserver
+        image: mreferre/yelb-appserver:0.5
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 4567
+        livenessProbe:
+          httpGet:
+            path: /api/getstats
+            port: 4567
+        readinessProbe:
+          httpGet:
+            path: /api/getstats
+            port: 4567
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          privileged: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: false
+        resources:
+          limits:
+            memory: 4Gi
+          requests:
+            memory: 100Mi
+            cpu: 100m
+      tolerations:
+      - key: "fairwinds.com/bakeoff"
+        operator: "Equal"
+        value: "spot"
+        effect: "NoSchedule"
+      nodeSelector:
+        fairwinds.com/bakeoff: spot

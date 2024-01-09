@@ -4,28 +4,27 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
   name: yelb-ui
-  namespace: keda
 spec:
   ingressClassName: nginx-ingress
   rules:
-  - host: yelb.sandbox.hillghost.com
+  - host: yelb.karpenter.sandbox.hillghost.com
     http:
       paths:
       - backend:
           service:
-            name: keda-add-ons-http-interceptor-proxy
+            name: yelb-appserver
             port:
               name: http
         path: /api
         pathType: ImplementationSpecific
       - backend:
           service:
-            name: keda-add-ons-http-interceptor-proxy
+            name: yelb-ui
             port:
               name: http
         path: /
         pathType: ImplementationSpecific
   tls:
   - hosts:
-    - yelb.sandbox.hillghost.com
+    - yelb.karpenter.sandbox.hillghost.com
     secretName: yelb-ui-tls

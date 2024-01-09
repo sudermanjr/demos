@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yelb-db
+spec:
+  selector:
+    matchLabels:
+      app: yelb-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: yelb-db
+        tier: backenddb
+        app.kubernetes.io/name: "yelb"
+    spec:
+      containers:
+      - name: yelb-db
+        image: mreferre/yelb-db:0.5
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5432
+        resources:
+          limits:
+            memory: 1Gi
+          requests:
+            memory: 100Mi
+            cpu: 100m
+      tolerations:
+      - key: "fairwinds.com/bakeoff"
+        operator: "Equal"
+        value: "karpenter"
+        effect: "NoSchedule"
+      nodeSelector:
+        fairwinds.com/bakeoff: karpenter

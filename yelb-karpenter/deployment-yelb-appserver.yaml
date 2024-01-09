@@ -39,3 +39,16 @@ spec:
           privileged: false
           readOnlyRootFilesystem: false
           runAsNonRoot: false
+        resources:
+          limits:
+            memory: 4Gi
+          requests:
+            memory: 100Mi
+            cpu: 100m
+      tolerations:
+      - key: "fairwinds.com/bakeoff"
+        operator: "Equal"
+        value: "karpenter"
+        effect: "NoSchedule"
+      nodeSelector:
+        fairwinds.com/bakeoff: karpenter
