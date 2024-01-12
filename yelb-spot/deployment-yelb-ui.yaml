@@ -35,12 +35,6 @@ spec:
           privileged: false
           readOnlyRootFilesystem: false
           runAsNonRoot: false
-        resources:
-          limits:
-            memory: 40Mi
-          requests:
-            memory: 10Mi
-            cpu: 20m
       tolerations:
       - key: "fairwinds.com/bakeoff"
         operator: "Equal"

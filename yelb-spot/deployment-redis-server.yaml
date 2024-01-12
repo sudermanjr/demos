@@ -23,12 +23,6 @@ spec:
         securityContext:
           allowPrivilegeEscalation: false
           privileged: false
-        resources:
-          limits:
-            memory: 20Mi
-          requests:
-            memory: 5Mi
-            cpu: 20m
       tolerations:
       - key: "fairwinds.com/bakeoff"
         operator: "Equal"
