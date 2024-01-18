@@ -13,10 +13,10 @@ spec:
         tier: middletier
         app.kubernetes.io/name: "yelb"
     spec:
-      topologySpreadConstraints:
-        - maxSkew: 1
-          topologyKey: kubernetes.io/hostname
-          whenUnsatisfiable: ScheduleAnyway
+      #topologySpreadConstraints:
+      #  - maxSkew: 1
+      #    topologyKey: kubernetes.io/hostname
+      #    whenUnsatisfiable: ScheduleAnyway
       containers:
       - name: yelb-appserver
         image: mreferre/yelb-appserver:0.5
