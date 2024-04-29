@@ -7,7 +7,7 @@ metadata:
 spec:
   ingressClassName: nginx-ingress
   rules:
-  - host: yelb.spot.sandbox.hillghost.com
+  - host: yelb.emp.sandbox.hillghost.com
     http:
       paths:
       - backend:
@@ -26,5 +26,5 @@ spec:
         pathType: ImplementationSpecific
   tls:
   - hosts:
-    - yelb.spot.sandbox.hillghost.com
+    - yelb.emp.sandbox.hillghost.com
     secretName: yelb-ui-tls
