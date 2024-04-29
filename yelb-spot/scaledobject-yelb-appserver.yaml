@@ -13,4 +13,4 @@ spec:
       serverAddress: http://prometheus-kube-prometheus-prometheus.fw-prometheus:9090
       metricName: nginx_ingress_controller_requests
       threshold: '5'
-      query: round(sum(rate(nginx_ingress_controller_requests{namespace="yelb-karpenter", ingress="yelb-ui", path="/api"}[1m])))
+      query: round(sum(rate(nginx_ingress_controller_requests{namespace="yelb-spot", ingress="yelb-ui", path="/api"}[1m])))
