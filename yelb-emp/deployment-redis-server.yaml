@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-server
+spec:
+  selector:
+    matchLabels:
+      app: redis-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: redis-server
+        tier: cache
+        app.kubernetes.io/name: yelb
+    spec:
+      containers:
+      - name: redis-server
+        image: redis:7
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 6379
+        securityContext:
+          allowPrivilegeEscalation: false
+          privileged: false
+      tolerations:
+      - key: "emp.pf9.io/EMPSchedulable"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+      nodeSelector:
+        emp.pf9.io/owned: 'true'

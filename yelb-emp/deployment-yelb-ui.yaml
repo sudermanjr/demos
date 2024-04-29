@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yelb-ui
+spec:
+  selector:
+    matchLabels:
+      app: yelb-ui
+  template:
+    metadata:
+      labels:
+        app: yelb-ui
+        tier: frontend
+        app.kubernetes.io/name: "yelb"
+    spec:
+      containers:
+      - name: yelb-ui
+        image: quay.io/fairwinds/yelb-ui:f38890ad009f4cda9ccfb030fa0fab4353e849fb
+        imagePullPolicy: Always
+        env:
+          - name: UI_ENV
+            value: prod
+        ports:
+        - containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+        securityContext:
+          allowPrivilegeEscalation: false
+          privileged: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: false
+      tolerations:
+      - key: "emp.pf9.io/EMPSchedulable"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+      nodeSelector:
+        emp.pf9.io/owned: 'true'
