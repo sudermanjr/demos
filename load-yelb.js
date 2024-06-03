@@ -15,7 +15,7 @@ export const options = {
         timeUnit: '1m',
         preAllocatedVUs: 50,
         stages: [
-          { target: 12000, duration: '1h' },
+          { target: 12000, duration: '10m' },
           { target: 18000, duration: '3h' },
           { target: 6000, duration: '4h' },
           { target: 60000, duration: '2h' },
