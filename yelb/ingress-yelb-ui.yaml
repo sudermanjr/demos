@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/limit-rps: 5
+    nginx.ingress.kubernetes.io/limit-rps: "5"
   name: yelb-ui
   namespace: keda
 spec:
