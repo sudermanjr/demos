@@ -5,7 +5,7 @@ metadata:
 spec:
   scaleTargetRef:
     name: yelb-appserver
-  minReplicaCount: 100
+  minReplicaCount: 2
   maxReplicaCount: 100
   triggers:
   - type: prometheus
