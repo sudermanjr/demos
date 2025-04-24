@@ -1,3 +1,24 @@
+apiVersion: eks.amazonaws.com/v1
+kind: NodeClass
+metadata:
+  name: gpu
+spec:
+  ephemeralStorage:
+    iops: 3000
+    size: 1000Gi
+    throughput: 125
+  networkPolicy: DefaultAllow
+  networkPolicyEventLogs: Disabled
+  role: eksctl-andy-ai-cluster-AutoModeNodeRole-gwyvWVKCasyn
+  securityGroupSelectorTerms:
+  - id: sg-0030982fc4c694d93
+  snatPolicy: Random
+  subnetSelectorTerms:
+  - id: subnet-063e42ca5f020a781
+  - id: subnet-0b513d1b331aab2dd
+  - id: subnet-0daf0e80a717fcfe1
+
+---
 apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
@@ -11,7 +32,7 @@ spec:
       nodeClassRef:
         group: eks.amazonaws.com
         kind: NodeClass
-        name: default
+        name: gpu
       taints:
         - key: ray.io/node-type
           value: worker
@@ -23,6 +44,9 @@ spec:
         - key: "eks.amazonaws.com/instance-gpu-count"
           operator: In
           values: ["1"]
+        - key: "kubernetes.io/arch"
+          operator: In
+          values: ["amd64"]
   limits:
     cpu: "100"
     memory: 100G
