@@ -1,0 +1,87 @@
+server:
+  config:
+    persistence:
+      default:
+        driver: "sql"
+
+        sql:
+          driver: "postgres12"
+          host: temporal-db.temporal.svc.cluster.local
+          port: 5432
+          database: temporal
+          user: postgres
+          password: 3491-c185-483d-a3f
+          # for a production deployment use this instead of `password` and provision the secret beforehand e.g. with a sealed secret
+          # it has a single key called `password`
+          # existingSecret: temporal-default-store
+          maxConns: 20
+          maxConnLifetime: "1h"
+          tls:
+            enabled: false
+          #  enableHostVerification: true
+          #  serverName: temporal-db.temporal.svc.cluster.local # this is strictly required when using serverless CRDB offerings
+          #  caFile: /path/to/certs/<CA-file> # Here we assumed that caFile, certFile, keyFile are stored in one secret mounted as 'secret-with-certs' (see: server.additionalVolumes and server.additionalVolumeMounts sections).
+          #  certFile: /path/to/certs/<client-cert-file>
+          #  keyFile: /path/to/certs/<client-key-file>
+
+      visibility:
+        driver: "sql"
+
+        sql:
+          driver: "postgres12"
+          host: temporal-db.temporal.svc.cluster.local
+          port: 5432
+          database: temporal_visibility
+          user: postgres
+          password: 3491-c185-483d-a3f
+          # for a production deployment use this instead of `password` and provision the secret beforehand e.g. with a sealed secret
+          # it has a single key called `password`
+          # existingSecret: temporal-visibility-store
+          maxConns: 20
+          maxConnLifetime: "1h"
+          tls:
+            enabled: false
+          #  enableHostVerification: true
+          #  serverName: temporal-db.temporal.svc.cluster.local # this is strictly required when using serverless CRDB offerings
+          #  caFile: /path/to/certs/<CA-file> # Here we assumed that caFile, certFile, keyFile are stored in one secret mounted as 'secret-with-certs' (see: server.additionalVolumes and server.additionalVolumeMounts sections).
+          #  certFile: /path/to/certs/<client-cert-file>
+          #  keyFile: /path/to/certs/<client-key-file>
+
+  # additionalVolumes:
+  #   - name: secret-with-certs
+  #     secret:
+  #       secretName: secret-with-certs
+  # additionalVolumeMounts:
+  #   - name: secret-with-certs
+  #     mountPath: /path/to/certs/
+
+web:
+  ingress:
+    enabled: true
+    className: nginx
+
+cassandra:
+  enabled: false
+
+mysql:
+  enabled: false
+
+postgresql:
+  enabled: true
+
+prometheus:
+  enabled: false
+
+grafana:
+  enabled: false
+
+elasticsearch:
+  enabled: false
+
+schema:
+  createDatabase:
+    enabled: true
+  setup:
+    enabled: true
+  update:
+    enabled: true

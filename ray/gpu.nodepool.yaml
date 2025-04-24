@@ -1,0 +1,28 @@
+apiVersion: karpenter.sh/v1
+kind: NodePool
+metadata:
+  name: gpu
+spec:
+  template:
+    metadata:
+      labels:
+        cost-area: research
+    spec:
+      nodeClassRef:
+        group: eks.amazonaws.com
+        kind: NodeClass
+        name: default
+      taints:
+        - key: ray.io/node-type
+          value: worker
+          effect: NoSchedule
+      requirements:
+        - key: "eks.amazonaws.com/instance-category"
+          operator: In
+          values: ["g"]
+        - key: "eks.amazonaws.com/instance-gpu-count"
+          operator: In
+          values: ["1"]
+  limits:
+    cpu: "100"
+    memory: 100G
