@@ -18,7 +18,7 @@ spec:
         working_dir: "https://github.com/ray-project/kuberay/archive/master.zip"
         pip: ["vllm==0.6.1.post2"]
         env_vars:
-          MODEL_ID: "deepseek-ai/DeepSeek-R1"
+          MODEL_ID: "meta-llama/Meta-Llama-3-8B-Instruct"
           TENSOR_PARALLELISM: "2"
           PIPELINE_PARALLELISM: "1"
   rayClusterConfig:
@@ -60,15 +60,16 @@ spec:
                 secretKeyRef:
                   name: hf-secret
                   key: hf_api_token
-            #resources:
-            #  limits:
-            #    cpu: "8"
-            #    memory: "10Gi"
-            #  requests:
-            #    cpu: "8"
-            #    memory: "10Gi"
+            resources:
+              limits:
+                cpu: "8"
+                memory: "10Gi"
+                nvidia.com/gpu: 1
+              requests:
+                cpu: "8"
+                memory: "10Gi"
           # Please add the following taints to the GPU node.
           tolerations:
-            - key: "nvidia.com/gpu"
-              operator: "Exists"
-              effect: "NoSchedule"
+            - key: ray.io/node-type
+              value: worker
+              effect: NoSchedule

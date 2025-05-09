@@ -9,15 +9,14 @@ spec:
     throughput: 125
   networkPolicy: DefaultAllow
   networkPolicyEventLogs: Disabled
-  role: eksctl-andy-ai-cluster-AutoModeNodeRole-gwyvWVKCasyn
+  role: eksctl-andy-ai-cluster-AutoModeNodeRole-mfDxggqGnDcQ
   securityGroupSelectorTerms:
-  - id: sg-0030982fc4c694d93
+  - id: sg-0ec74ce50bb548912
   snatPolicy: Random
   subnetSelectorTerms:
-  - id: subnet-063e42ca5f020a781
-  - id: subnet-0b513d1b331aab2dd
-  - id: subnet-0daf0e80a717fcfe1
-
+  - id: subnet-01ba9c49692cf1cf9
+  - id: subnet-0190b3c01cdc4a5fb
+  - id: subnet-054a3712cd2d55c7f
 ---
 apiVersion: karpenter.sh/v1
 kind: NodePool
@@ -41,9 +40,12 @@ spec:
         - key: "eks.amazonaws.com/instance-category"
           operator: In
           values: ["g"]
+        - key: "eks.amazonaws.com/instance-generation"
+          operator: In
+          values: ["5"]
         - key: "eks.amazonaws.com/instance-gpu-count"
           operator: In
-          values: ["1"]
+          values: ["2"]
         - key: "kubernetes.io/arch"
           operator: In
           values: ["amd64"]
