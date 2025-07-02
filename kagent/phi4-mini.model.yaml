@@ -1,0 +1,9 @@
+apiVersion: ollama.ayaka.io/v1
+kind: Model
+metadata:
+  labels:
+    ollama.ayaka.io/managed-by: kollama
+  name: phi4-mini
+  namespace: ollama-apps
+spec:
+  image: phi4-mini

@@ -1,0 +1,18 @@
+apiVersion: kagent.dev/v1alpha1
+kind: ModelConfig
+metadata:
+  name: phi4-mini
+  namespace: kagent
+spec:
+  model: phi4-mini
+  provider: Ollama
+  ollama:
+    host: http://ollama-srv-0f1ed1.ollama-apps.svc.cluster.local:11434
+  # Required: Specify model capabilities
+  modelInfo:
+    vision: false
+    functionCalling: true
+    jsonOutput: true
+    family: "unknown"
+    structuredOutput: true
+    multipleSystemMessages: false
