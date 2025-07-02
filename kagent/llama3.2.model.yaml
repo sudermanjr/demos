@@ -1,0 +1,9 @@
+apiVersion: ollama.ayaka.io/v1
+kind: Model
+metadata:
+  labels:
+    ollama.ayaka.io/managed-by: kollama
+  name: llama3.2
+  namespace: ollama-apps
+spec:
+  image: llama3.2

@@ -1,0 +1,18 @@
+apiVersion: kagent.dev/v1alpha1
+kind: ModelConfig
+metadata:
+  name: llama3.2
+  namespace: kagent
+spec:
+  model: llama3.2
+  provider: Ollama
+  ollama:
+    host: http://ollama-srv-7ad134.ollama-apps.svc.cluster.local:11434
+  # Required: Specify model capabilities
+  modelInfo:
+    vision: false
+    functionCalling: true
+    jsonOutput: true
+    family: "unknown"
+    structuredOutput: true
+    multipleSystemMessages: false

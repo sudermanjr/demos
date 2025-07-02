@@ -45,7 +45,7 @@ spec:
           values: ["5"]
         - key: "eks.amazonaws.com/instance-gpu-count"
           operator: In
-          values: ["2"]
+          values: ["1"]
         - key: "kubernetes.io/arch"
           operator: In
           values: ["amd64"]

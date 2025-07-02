@@ -19,7 +19,7 @@ spec:
         pip: ["vllm==0.6.1.post2"]
         env_vars:
           MODEL_ID: "meta-llama/Meta-Llama-3-8B-Instruct"
-          TENSOR_PARALLELISM: "2"
+          TENSOR_PARALLELISM: "1"
           PIPELINE_PARALLELISM: "1"
   rayClusterConfig:
     headGroupSpec:
@@ -64,11 +64,11 @@ spec:
               limits:
                 cpu: "8"
                 memory: "20Gi"
-                nvidia.com/gpu: "2"
+                nvidia.com/gpu: "1"
               requests:
                 cpu: "8"
                 memory: "20Gi"
-                nvidia.com/gpu: "2"
+                nvidia.com/gpu: "1"
           # Please add the following taints to the GPU node.
           tolerations:
             - key: ray.io/node-type

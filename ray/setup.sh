@@ -1,8 +1,8 @@
 #!/bin/bash
 
-kubectl apply -f nodepools/
+#kubectl apply -f nodepools/
 
-helm upgrade --install prometheus --namespace prometheus --create-namespace prometheus-community/kube-prometheus-stack
+#helm upgrade --install prometheus --namespace prometheus --create-namespace prometheus-community/kube-prometheus-stack
 
 kubectl create secret generic hf-secret   --from-literal=hf_api_token=${HF_TOKEN}   --dry-run=client -o yaml | kubectl apply -f -
 

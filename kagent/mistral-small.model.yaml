@@ -1,0 +1,9 @@
+apiVersion: ollama.ayaka.io/v1
+kind: Model
+metadata:
+  labels:
+    ollama.ayaka.io/managed-by: kollama
+  name: mistral-small
+  namespace: ollama-apps
+spec:
+  image: mistral-small
